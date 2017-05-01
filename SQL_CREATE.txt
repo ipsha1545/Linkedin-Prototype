@@ -1,0 +1,56 @@
+CREATE TABLE `companies` (
+  `company_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `website` varchar(100) DEFAULT NULL,
+  `location` varchar(50) DEFAULT NULL,
+  `image_URL` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`company_id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+CREATE TABLE `job_openings` (
+  `job_id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text,
+  `responsibilities` mediumtext,
+  `location` varchar(50) DEFAULT NULL,
+  `salary` float DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`job_id`),
+  KEY `company_id` (`company_id`),
+  CONSTRAINT `job_openings_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `job_openings_users` (
+  `job_user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `interested` tinyint(1) DEFAULT NULL,
+  `terminal` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`job_user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `company_id` (`company_id`),
+  CONSTRAINT `job_openings_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `job_openings_users_ibfk_2` FOREIGN KEY (`company_id`) REFERENCES `companies` (`company_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstname` varchar(50) DEFAULT NULL,
+  `lastname` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `education` varchar(255) DEFAULT NULL,
+  `introduction` varchar(255) DEFAULT NULL,
+  `experience` float DEFAULT NULL,
+  `skills` varchar(255) DEFAULT NULL,
+  `pending_applications` int(11) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
