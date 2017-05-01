@@ -75,6 +75,5 @@
         </plugins>
     </build>
 
-    <mvc:annotation-driven />
 
 </project>
