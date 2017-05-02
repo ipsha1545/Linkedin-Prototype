@@ -1,37 +1,49 @@
 package JobPortal.controller;
 
-import JobPortal.model.Company;
-import JobPortal.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import JobPortal.model.Company;
+import JobPortal.service.CompanyService;
+
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * Created by ipshamohanty on 5/1/17.
  */
-@RestController
+
+@Controller
 public class CompanyController {
+    
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CompanyService companyService;
 
-    @RequestMapping(value= "/company/{companyId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> getById(HttpServletResponse response, @PathVariable(value="companyId") int companyId) {
+    @RequestMapping( value = "/company/{companyId}", method = RequestMethod.GET)
+    public ResponseEntity getCompany(HttpServletResponse response, 
+                                @PathVariable int companyId) {
 
-
-        Company company;
 
         ModelAndView modelAndView = null;
         ModelMap model = new ModelMap();
-
-
-        company = companyService.getCompany(companyId);
+        Company company = companyService.getCompany(companyId);
 
         model.addAttribute("companyId", company.getCompanyId());
         model.addAttribute("companyname", company.getCompanyname());
@@ -39,34 +51,40 @@ public class CompanyController {
         model.addAttribute("location", company.getLocation());
         model.addAttribute("logo_image_URL", company.getLogo_image_URL());
         model.addAttribute("description", company.getDescription());
-
-        ////companyId,companyname,website,location,logo_image_URL,description
-
-        return ResponseEntity.ok(model);
-
+        return new ResponseEntity<>(model, new HttpHeaders(), HttpStatus.OK);
 
     }
-
 
     @RequestMapping(value= "/company", method = RequestMethod.POST)
-    public void create(HttpServletResponse response,
-                       @RequestParam(value="companyname", required = true) String companyname,
-                       @RequestParam(value="website", required = true) String website,
-                       @RequestParam(value="location", required = false) String location,
-                       @RequestParam(value="logo_image_URL", required = false) String logo_image_URL,
-                       @RequestParam(value="description", required = true) String description
-    ) throws IOException {
-        System.out.println(companyname);
-        System.out.println(website);
-        System.out.println(location);
-        System.out.println(logo_image_URL);
-        System.out.println(description);
+    public ResponseEntity createCompany(HttpServletResponse response, 
+                                    @RequestParam Map<String,String> params)
+    {
+        
+        if (params.get("companyName") == null || params.get("website") == null 
+                             || params.get("description") == null)
+        {
+                //TODO : Raise Bad Req exception here
+                log.error("parameters required");
+        }
+        String companyName = params.get("companyName");
+        String website = params.get("website");
+        String description = params.get("description");
+        String location = params.get("location");
+        String logoImageUrl = params.get("logoImageUrl");
+        
+        log.error("creating company"); 
+        Company company = companyService.createCompany(companyName, 
+                        website, location,logoImageUrl, description);
+         
+        ModelMap model = new ModelMap();
+        model.addAttribute("companyId", company.getCompanyId());
+        model.addAttribute("companyname", company.getCompanyname());
+        model.addAttribute("website", company.getWebsite());
+        model.addAttribute("location", company.getLocation());
+        model.addAttribute("logo_image_URL", company.getLogo_image_URL());
+        model.addAttribute("description", company.getDescription());
+        return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 
-        companyService.createCompany(companyname, website, location, logo_image_URL, description);
 
     }
-
-
-
-
 }

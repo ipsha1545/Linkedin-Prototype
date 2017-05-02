@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class CompanyService {
+    
     @Autowired
     private CompanyDao companyDao;
 
@@ -32,10 +33,11 @@ public class CompanyService {
     public Company getCompany(int companyId){
 
         Company company = null;
-
         return companyDao.findBycompanyId(companyId);
     }
-    public void createCompany(String companyname, String website, String location, String logo_image_URL, String description){
+
+    public Company createCompany(String companyname, String website, String location, 
+                    String logoImageUrl, String description) {
 
 
         ModelAndView modelAndView;
@@ -45,19 +47,12 @@ public class CompanyService {
         Company company;
 
         try{
-
-            System.out.println("received company details in company service");
-
-            company = new Company(companyname, website, location, logo_image_URL, description);
-            System.out.println("reached 1");
-
-            companyDao.save(company);
-            System.out.println("reached");
-
-
-        }catch(Exception ex){
-            String message = "Another company with the same number already exists.";
-
+            company = new Company(companyname, website, location, logoImageUrl, description);
+            Company newCompany = companyDao.save(company);
+            return newCompany;
+        } catch(Exception ex) {
+           //TODO : Handle exception  
+            return null;
         }
 
     }
