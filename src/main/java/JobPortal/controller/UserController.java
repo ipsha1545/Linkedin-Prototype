@@ -5,6 +5,7 @@ import JobPortal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@RestController
+@Controller
 public class UserController {
 
     @Autowired
@@ -49,35 +50,26 @@ public class UserController {
 
 
     @RequestMapping(value= "/users", method = RequestMethod.POST)
-    public void create(HttpServletResponse response,@RequestParam(value="firstname", required = true) String firstname,
-                               @RequestParam(value="lastname", required = true) String lastname,
-                               @RequestParam(value="email", required = true) String email,
-                               @RequestParam(value="image", required = false) String image,
-                               @RequestParam(value="introduction", required = false) String introduction,
-                               @RequestParam(value="experience", required = true) Float experience,
-                               @RequestParam(value="status", required = true) String status,
-                               @RequestParam(value="education", required = true) String education,
-                               @RequestParam(value="skills", required = true) String skills,
-                               @RequestParam(value="address", required = true) String address,
-                               @RequestParam(value="phone", required = true) String phone
+    public ResponseEntity<Object> create(HttpServletResponse response,@RequestParam(value="firstname", required = true) String firstname,
+                                         @RequestParam(value="lastname", required = true) String lastname,
+                                         @RequestParam(value="email", required = true) String email,
+                                         @RequestParam(value="image", required = false) String image,
+                                         @RequestParam(value="introduction", required = false) String introduction,
+                                         @RequestParam(value="experience", required = true) Float experience,
+                                         @RequestParam(value="status", required = true) String status,
+                                         @RequestParam(value="education", required = true) String education,
+                                         @RequestParam(value="skills", required = true) String skills,
+                                         @RequestParam(value="address", required = true) String address,
+                                         @RequestParam(value="phone", required = true) String phone
 
 
-                       ) throws IOException {
-            System.out.println(firstname);
-            System.out.println(lastname);
-            System.out.println(email);
-            System.out.println(image);
-            System.out.println(introduction);
-            System.out.println(experience);
-            System.out.println(status);
-            System.out.println(education);
-            System.out.println(skills);
+    ) throws IOException {
 
+        ResponseEntity<Object> rs = userService.createUser(firstname, lastname, phone, email, address, education, skills, experience, introduction, status, image);
 
-            userService.createUser(firstname, lastname, phone, email, address, education, skills, experience, introduction, status, image);
+        return rs;
 
-        }
-
+    }
 
 
 

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
-
+import org.springframework.http.ResponseEntity;
 import javax.transaction.Transactional;
 
 /**
@@ -30,39 +30,50 @@ public class UserService {
     }
 
     public User getUser(int id){
-
-        User user = null;
-
         return userDao.findByuserId(id);
     }
-    public void createUser(String firstname, String lastname, String phone, String email, String address, String education, String skills,
-                           Float experience, String introduction, String status, String image){
 
 
-        ModelAndView modelAndView;
-        ObjectMapper mapper = new ObjectMapper();
+    public ResponseEntity<Object> createUser(String firstname, String lastname, String phone, String email, String address, String education, String skills,
+                                             Float experience, String introduction, String status, String image){
+
         ModelMap model = new ModelMap();
+        int id;
 
         User user;
 
         try{
+            User userPhone = userDao.findUserByPhone(phone);
+            User userEmail = userDao.findUserByEmail(email);
 
-            System.out.println("received user details in user service");
+            System.out.println("request recieved in user service");
 
-            user = new User(firstname,lastname,phone,email,address,education,skills,experience,introduction,status,image);
-            System.out.println("reached 1");
+            if(userEmail == null){
+                if(userPhone == null){
+                    user = new User(firstname, lastname, phone, email, address, education, skills,experience, introduction, status, image);
+                    userDao.save(user);
 
-            userDao.save(user);
-            System.out.println("reached");
+                    id = user.getUserId();
+                    model.addAttribute("user", id);
 
+                    return  ResponseEntity.ok(model);
 
+                }else{
+                    System.out.println("phone exists - creating user");
+                    model.addAttribute("user", -1);
+                    return  ResponseEntity.ok(model);
+                }
+            }else{
+                model.addAttribute("user", 0);
+                System.out.println("email exists - creating user");
+                return  ResponseEntity.ok(model);
+            }
         }catch(Exception ex){
-            String message = "Another user with the same number already exists.";
-
+            System.out.println("some unknown error creating user");
+            model.addAttribute("user", -2);
+            return  ResponseEntity.ok(model);
         }
-
     }
-
 
 
 }
