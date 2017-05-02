@@ -75,7 +75,7 @@ public class CompanyController {
         log.error("creating company"); 
         Company company = companyService.createCompany(companyName, 
                         website, location,logoImageUrl, description);
-         
+        /* 
         ModelMap model = new ModelMap();
         model.addAttribute("companyId", company.getCompanyId());
         model.addAttribute("companyname", company.getCompanyname());
@@ -83,8 +83,35 @@ public class CompanyController {
         model.addAttribute("location", company.getLocation());
         model.addAttribute("logo_image_URL", company.getLogo_image_URL());
         model.addAttribute("description", company.getDescription());
+        */
+        return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value= "/company/{companyId}", method = RequestMethod.PUT)
+    public ResponseEntity updateCompany(HttpServletResponse response, 
+                                    @RequestParam Map<String,String> params,
+                                    @PathVariable int companyId)
+    {
+        
+        if (params.get("companyName") == null || params.get("website") == null 
+                             || params.get("description") == null)
+        {
+                //TODO : Raise Bad Req exception here
+                log.error("parameters required");
+        }
+        String companyName = params.get("companyName");
+        String website = params.get("website");
+        String description = params.get("description");
+        String location = params.get("location");
+        String logoImageUrl = params.get("logoImageUrl");
+        
+        log.error("creating company"); 
+        Company company = companyService.updateCompany(companyName, 
+                        website, location,logoImageUrl, description, companyId);
         return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 
-
     }
+
+
+   
 }

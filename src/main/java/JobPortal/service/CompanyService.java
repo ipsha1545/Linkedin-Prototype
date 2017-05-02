@@ -46,7 +46,7 @@ public class CompanyService {
 
         Company company;
 
-        try{
+        try {
             company = new Company(companyname, website, location, logoImageUrl, description);
             Company newCompany = companyDao.save(company);
             return newCompany;
@@ -54,8 +54,27 @@ public class CompanyService {
            //TODO : Handle exception  
             return null;
         }
-
     }
+
+   public Company updateCompany(String companyName, String website, String location, 
+                                    String logoImageUrl, String description, int companyId)
+  {
+        Company company = companyDao.findBycompanyId(companyId);
+        if (company == null) {
+            //todo : company not found 
+            //raise error
+        } 
+        
+       try {
+            company = new Company(companyName, website, location, logoImageUrl, description);
+            company.setCompanyId(companyId);
+            company = companyDao.save(company);
+            return company;
+        } catch(Exception ex) {
+           //TODO : Handle exception  
+            return null;
+        }
+  }
 
 
 
