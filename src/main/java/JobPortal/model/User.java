@@ -7,15 +7,16 @@ import JobPortal.controller.*;
 //import JobPortal.service.*;
 
 /**
- * Created by anvita on 4/18/17.
+ * Created by ipsha on 4/18/17.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     //private attributes
-
+   ////firstname, lastname, phone, email, address, education, skills, experience, introduction, status, image
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="userId")
     private int userId;
 
@@ -25,20 +26,26 @@ public class User {
     @Column(name="lastname")
     private String lastname;
 
-    @Column(name="email")
+    @Column(name="phone",unique = true)
+    private String phone;
+
+    @Column(name="email", unique = true)
     private String email;
 
-    @Column(name="profile_image")
-    private String profile_image;
+    @Column(name="image")
+    private String image;
 
-    @Column(name="self_intro")
-    private String self_intro;
+    @Column(name="address")
+    private String address;
 
-    @Column(name="work_ex")
-    private Float work_ex;
+    @Column(name="introduction")
+    private String introduction;
 
-    @Column(name="max_education")
-    private String max_education;
+    @Column(name="experience")
+    private Float experience;
+
+    @Column(name="education")
+    private String education;
 
     @Column(name="current_status")
     private String status;
@@ -46,22 +53,29 @@ public class User {
     @Column(name="skills")
     private String skills;
 
+    @Column(name="pending_applications",columnDefinition="Decimal(10,0) default '0'")
+    private int pending_applications;
+
     //constructors
 
     public User(){
 
     }
 
-    public User(int id, String firstname, String lastname, String email, Float work_ex, String status, String max_education, String skills) {
+    public User(String firstname, String lastname,String phone, String email,String address,String education,String skills, Float experience, String introduction, String status,String image) {
         super();
-        this.userId = id;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.phone = phone;
         this.email = email;
-        this.work_ex = work_ex;
-        this.max_education = max_education;
+        this.address = address;
+        this.experience = experience;
+        this.education = education;
+        this.introduction = introduction;
         this.status = status;
         this.skills = skills;
+        this.image = image;
+
     }
 
     //public getter methods
@@ -74,6 +88,30 @@ public class User {
         return firstname;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getPending_applications() {
+        return pending_applications;
+    }
+
+    public void setPending_applications(int pending_applications) {
+        this.pending_applications = pending_applications;
+    }
+
     public String getLastname() {
         return lastname;
     }
@@ -82,20 +120,20 @@ public class User {
         return email;
     }
 
-    public String getProfile_image() {
-        return profile_image;
+    public String getImage() {
+        return image;
     }
 
-    public String getSelf_intro() {
-        return self_intro;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public Float getWork_ex() {
-        return work_ex;
+    public Float getExperience() {
+        return experience;
     }
 
-    public String getMax_education() {
-        return max_education;
+    public String getEducation() {
+        return education;
     }
 
     public String getStatus() {
@@ -124,20 +162,20 @@ public class User {
         this.email = email;
     }
 
-    public void setProfile_image(String profile_image) {
-        this.profile_image = profile_image;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public void setSelf_intro(String self_intro) {
-        this.self_intro = self_intro;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
-    public void setWork_ex(Float work_ex) {
-        this.work_ex = work_ex;
+    public void setExperience(Float experience) {
+        this.experience = experience;
     }
 
-    public void setMax_education(String max_education) {
-        this.max_education = max_education;
+    public void setEducation(String education) {
+        this.education = education;
     }
 
     public void setStatus(String status) {
