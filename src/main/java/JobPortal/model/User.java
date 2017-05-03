@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.*;
 
 import JobPortal.controller.*;
+import java.util.Random;
 //import JobPortal.service.*;
 
 /**
@@ -32,6 +33,9 @@ public class User {
     @Column(name="email", unique = true)
     private String email;
 
+    @Column(name="password")
+    private String password;
+
     @Column(name="image")
     private String image;
 
@@ -53,8 +57,14 @@ public class User {
     @Column(name="skills")
     private String skills;
 
+    @Column(name="verified",columnDefinition="Decimal(10,0) default '0'")
+    private int verified;
+
     @Column(name="pending_applications",columnDefinition="Decimal(10,0) default '0'")
     private int pending_applications;
+
+    @Column(name="verification_code")
+    private int verification_code;
 
     //constructors
 
@@ -62,12 +72,16 @@ public class User {
 
     }
 
-    public User(String firstname, String lastname,String phone, String email,String address,String education,String skills, Float experience, String introduction, String status,String image) {
+    public User(String firstname, String lastname,String phone, String email,String password, String address,
+                String education,String skills, Float experience, String introduction, String status,
+                String image, int verification) {
         super();
+
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
         this.email = email;
+        this.password = password;
         this.address = address;
         this.experience = experience;
         this.education = education;
@@ -75,6 +89,7 @@ public class User {
         this.status = status;
         this.skills = skills;
         this.image = image;
+        this.verification_code =  verification;
 
     }
 
@@ -144,6 +159,18 @@ public class User {
         return skills;
     }
 
+    public int getVerified() {
+        return verified;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public int getVerification_code() {
+        return verification_code;
+    }
+
     //public setter methods
 
     public void setUserId(int userId) {
@@ -186,5 +213,16 @@ public class User {
         this.skills = skills;
     }
 
+    public void setVerified(int verified) {
+        this.verified = verified;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setVerification_code(int verification_code) {
+        this.verification_code = verification_code;
+    }
 
 }
