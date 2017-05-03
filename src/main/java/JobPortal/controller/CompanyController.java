@@ -49,7 +49,7 @@ public class CompanyController {
         model.addAttribute("companyname", company.getCompanyname());
         model.addAttribute("website", company.getWebsite());
         model.addAttribute("location", company.getLocation());
-        model.addAttribute("logo_image_URL", company.getLogo_image_URL());
+        model.addAttribute("logo_image_url", company.getLogo_image_url());
         model.addAttribute("description", company.getDescription());
         return new ResponseEntity<>(model, new HttpHeaders(), HttpStatus.OK);
 
@@ -93,20 +93,23 @@ public class CompanyController {
                                     @PathVariable int companyId)
     {
         
-        if (params.get("companyName") == null || params.get("website") == null 
-                             || params.get("description") == null)
-        {
-                //TODO : Raise Bad Req exception here
-                log.error("parameters required");
+        Company company = companyService.getCompany(companyId);
+
+        if (company == null) {
+            //raise an exception
         }
-        String companyName = params.get("companyName");
-        String website = params.get("website");
-        String description = params.get("description");
-        String location = params.get("location");
-        String logoImageUrl = params.get("logoImageUrl");
+        String companyName = params.get("companyname") == null ?
+                                company.getCompanyname() : params.get("companyname"); 
+        String website = params.get("website") == null ?
+                                company.getWebsite() : params.get("website");
+        String description = params.get("description") == null ?
+                                company.getDescription() : params.get("description");
+        String location = params.get("location") == null ?
+                                company.getLocation() : params.get("location");
+        String logoImageUrl = params.get("logoImageUrl") == null ?
+                                company.getLogo_image_url() : params.get("logoImageUrl");
         
-        log.error("creating company"); 
-        Company company = companyService.updateCompany(companyName, 
+        company = companyService.updateCompany(companyName, 
                         website, location,logoImageUrl, description, companyId);
         return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 
