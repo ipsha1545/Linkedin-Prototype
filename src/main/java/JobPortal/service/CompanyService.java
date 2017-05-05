@@ -37,7 +37,7 @@ public class CompanyService {
     }
 
     public Company createCompany(String companyname, String website, String location, 
-                    String logoImageUrl, String description) {
+                     String logoImageUrl, String description, String password) {
 
 
         ModelAndView modelAndView;

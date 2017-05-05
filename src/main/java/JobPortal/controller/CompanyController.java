@@ -71,10 +71,11 @@ public class CompanyController {
         String description = params.get("description");
         String location = params.get("location");
         String logoImageUrl = params.get("logoImageUrl");
+        String password = params.get("password");
         
         log.error("creating company"); 
         Company company = companyService.createCompany(companyName, 
-                        website, location,logoImageUrl, description);
+                        website, location,logoImageUrl, description, password);
         /* 
         ModelMap model = new ModelMap();
         model.addAttribute("companyId", company.getCompanyId());
