@@ -32,6 +32,9 @@ public class Company {
     
     @Column(name="password")
     private String password;
+    
+    @Column(name="companyemail")
+    private String companyemail;
 
     /*
     @Column(name="password")
@@ -50,13 +53,14 @@ public class Company {
     }
 
      public Company(String companyname, String website, String location, String logo_image_url, 
-                        String description, String password) {
+                        String description, String password, String companyemail) {
         this.companyname = companyname;
         this.website = website;
         this.location = location;
         this.logo_image_url = logo_image_url;
         this.description = description;
         this.password = password;
+        this.companyemail = companyemail;
     }
     public int getCompanyId() {
         return companyId;
@@ -107,12 +111,22 @@ public class Company {
     }
 
     public String getPassword() {
-        return description;
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
+
+     public String getCompanyemail() {
+        return companyemail;
+    }
+
+    public void setCompanyemail(String email) {
+        this.companyemail = email;
+    }
+
+    
 
     public Company(){
 

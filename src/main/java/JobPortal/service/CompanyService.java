@@ -37,7 +37,8 @@ public class CompanyService {
     }
 
     public Company createCompany(String companyname, String website, String location, 
-                     String logoImageUrl, String description, String password) {
+                     String logoImageUrl, String description, String password, String companyemail) 
+    {
 
 
         ModelAndView modelAndView;
@@ -47,7 +48,8 @@ public class CompanyService {
         Company company;
 
         try {
-            company = new Company(companyname, website, location, logoImageUrl, description);
+            company = new Company(companyname, website, location, logoImageUrl, description, 
+                        password, companyemail);
             Company newCompany = companyDao.save(company);
             return newCompany;
         } catch(Exception ex) {

@@ -51,7 +51,7 @@ public class CompanyController {
         model.addAttribute("location", company.getLocation());
         model.addAttribute("logo_image_url", company.getLogo_image_url());
         model.addAttribute("description", company.getDescription());
-        return new ResponseEntity<>(model, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 
     }
 
@@ -59,7 +59,7 @@ public class CompanyController {
     public ResponseEntity createCompany(HttpServletResponse response, 
                                     @RequestParam Map<String,String> params)
     {
-        
+        log.error("im here"); 
         if (params.get("companyName") == null || params.get("website") == null 
                              || params.get("description") == null)
         {
@@ -72,10 +72,11 @@ public class CompanyController {
         String location = params.get("location");
         String logoImageUrl = params.get("logoImageUrl");
         String password = params.get("password");
+        String companyEmail = params.get("companyEmail");
         
         log.error("creating company"); 
         Company company = companyService.createCompany(companyName, 
-                        website, location,logoImageUrl, description, password);
+                        website, location,logoImageUrl, description, password, companyEmail);
         /* 
         ModelMap model = new ModelMap();
         model.addAttribute("companyId", company.getCompanyId());
