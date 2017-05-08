@@ -64,7 +64,7 @@ public class JobOpening {
         this.description = description;
     }
 
-    public void setCompanyname() {
+    public void setCompanyname(String companyname) {
         this.companyname = companyname;
     }
     
@@ -97,7 +97,7 @@ public class JobOpening {
         this.salary = salary;
     }
 
-   public JobOpening(int companyId, String companyName, String title, String description,
+   public JobOpening(int companyId, String companyname, String title, String description,
                      String responsibilities, String location, int salary)
    {
         this.companyId = companyId;
@@ -107,5 +107,9 @@ public class JobOpening {
         this.location = location;
         this.salary = salary;
         this.companyname = companyname;
+   } 
+
+   public JobOpening() {
+   
    } 
 }

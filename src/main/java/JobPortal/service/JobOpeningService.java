@@ -42,13 +42,13 @@ public class JobOpeningService {
                 String responsibilities, String location, String salary)
     {
 
-        JobOpening jobOpening = null; 
+        JobOpening jobOpening; 
         try {       
             jobOpening = new JobOpening(Integer.valueOf(company.getCompanyId()), company.getCompanyname(),  
                                      title, description, responsibilities, location, 
                                      Integer.valueOf(salary));
-            jobOpening = jobOpeningDao.save(jobOpening);
-            return jobOpening;
+            JobOpening newJobOpening = jobOpeningDao.save(jobOpening);
+            return newJobOpening;
         } catch (Exception e)
         {
             return null;

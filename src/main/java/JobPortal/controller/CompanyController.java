@@ -59,7 +59,6 @@ public class CompanyController {
     public ResponseEntity createCompany(HttpServletResponse response, 
                                     @RequestParam Map<String,String> params)
     {
-        log.error("im here"); 
         if (params.get("companyName") == null || params.get("website") == null 
                              || params.get("description") == null)
         {
@@ -74,7 +73,6 @@ public class CompanyController {
         String password = params.get("password");
         String companyEmail = params.get("companyEmail");
         
-        log.error("creating company"); 
         Company company = companyService.createCompany(companyName, 
                         website, location,logoImageUrl, description, password, companyEmail);
         /* 

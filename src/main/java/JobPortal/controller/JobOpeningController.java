@@ -36,8 +36,7 @@ public class JobOpeningController {
 
 
     @RequestMapping(value ="/jobopenings", method = RequestMethod.POST)
-    public ResponseEntity createJobOpening(HttpServletResponse response, 
-                                    @RequestParam Map<String,String> params) 
+    public ResponseEntity createJobOpening(HttpServletResponse response, @RequestParam Map<String,String> params) 
     {
         String companyId = params.get("companyId");
         
@@ -52,11 +51,20 @@ public class JobOpeningController {
         {
             //return with error here
         }
-         
-        JobOpening jobopening =  null;
-        //jobopeningService.createJobopening(company, title, );
-        log.error("Creating an opening");
-    
+        
+        String title = params.get("title");
+        String description = params.get("description");
+        String location = params.get("location");
+        String salary = params.get("salary");
+        String responsibilties = params.get("responsibilities");
+      
+        JobOpening jobopening = jobopeningService.createJobOpening(company, title, description, 
+                                    responsibilties, location, salary);
+        if (jobopening == null) {
+            log.error("job opening is null");
+        } else {
+            log.error(jobopening.getCompanyname());
+        }
         return new ResponseEntity<>(companyService.getJobopeningInCompany(company,jobopening), 
                                             new HttpHeaders(), HttpStatus.OK);
 
