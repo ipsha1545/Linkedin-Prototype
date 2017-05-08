@@ -94,7 +94,7 @@ public class CompanyService {
         return jobOpeningJson;
    }
 
-   public String getAllJobOpenings(Company company, List<JobOpening> jobOpeningList)
+   public String getJobOpenings(Company company, List<JobOpening> jobOpeningList)
    {
         LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
         map.put("company", company);

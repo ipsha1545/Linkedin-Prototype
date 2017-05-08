@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
@@ -76,7 +77,8 @@ public class JobOpeningController {
 
      @RequestMapping(value ="/company/{companyId}/jobopenings", method = RequestMethod.GET)
      public ResponseEntity getJobOpeningsInCompany( HttpServletResponse response, 
-                                            @PathVariable String companyId)
+                                            @PathVariable String companyId,
+                                            @RequestParam Map<String, String> params) 
     {
         Company company = companyService.getCompany(Integer.valueOf(companyId));
         
@@ -84,10 +86,21 @@ public class JobOpeningController {
         {
             //return with error here
         }
+        
+        if (params.get("statuslists") != null) {
+            String statuslists = params.get("statuslists");
+            List<String> statusList= Arrays.asList(statuslists.split("\\s*,\\s*"));
+            List<JobOpening> jobOpeningByStatusList = new ArrayList<>();
+            jobOpeningByStatusList = jobOpeningService.
+                                    getJobOpeningsInCompany(companyId, statusList);
 
+            return new ResponseEntity<>(companyService.getJobOpenings(company, 
+                                jobOpeningByStatusList), new HttpHeaders(), HttpStatus.OK);
+
+        }
         List<JobOpening> jobOpeningList = new ArrayList<>();
         jobOpeningList = jobOpeningService.getJobOpeningsInCompany(companyId);
-        return new ResponseEntity<>(companyService.getAllJobOpenings(company, jobOpeningList),
+        return new ResponseEntity<>(companyService.getJobOpenings(company, jobOpeningList),
                                     new HttpHeaders(), HttpStatus.OK);
     }
 
