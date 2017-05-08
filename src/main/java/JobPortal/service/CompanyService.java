@@ -1,6 +1,7 @@
 package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
+import JobPortal.model.JobOpening;
 
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,8 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.LinkedHashMap;
+import java.util.Objects;
+
 import javax.transaction.Transactional;
 
+import com.google.gson.Gson;
 /**
  * Created by ipshamohanty on 5/1/17.
  */
@@ -60,7 +65,7 @@ public class CompanyService {
 
    public Company updateCompany(String companyName, String website, String location, 
                                     String logoImageUrl, String description, int companyId)
-  {
+   {
         Company company = companyDao.findBycompanyId(companyId);
         if (company == null) {
             //todo : company not found 
@@ -76,7 +81,18 @@ public class CompanyService {
            //TODO : Handle exception  
             return null;
         }
-  }
+   }
+   
+   public String getJobopeningInCompany(Company company, JobOpening jobopening)
+   {
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
+        map.put("company", company);
+        map.put("jobopening", jobopening);
+        Gson gson = new Gson();
+        String jobOpeningJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningJson;
+   }
+    
 
 
 

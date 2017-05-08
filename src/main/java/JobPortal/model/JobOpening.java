@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="job_openings")
-public class JobOpenings {
+public class JobOpening {
     
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -96,5 +96,16 @@ public class JobOpenings {
     public void setSalary(int salary) {
         this.salary = salary;
     }
-    
+
+   public JobOpening(int companyId, String companyName, String title, String description,
+                     String responsibilities, String location, int salary)
+   {
+        this.companyId = companyId;
+        this.title = title;
+        this.description = description;
+        this.responsibilities = responsibilities;
+        this.location = location;
+        this.salary = salary;
+        this.companyname = companyname;
+   } 
 }
