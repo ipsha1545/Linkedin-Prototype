@@ -12,6 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * Created by ipshamohanty on 5/1/17.
  */
@@ -54,5 +57,13 @@ public class JobOpeningService {
             return null;
         }
     } 
-    
+   
+    //@Transactional(readOnly = true)
+    public List<JobOpening> getJobOpeningsInCompany(String companyId)
+    {
+       String query = "select * from job_openings where job_openings.companyId = " + companyId;
+       List<JobOpening> jobOpeningList = new ArrayList<>();
+       jobOpeningList = jobOpeningDao.findJobOpeningsInCompany(companyId);
+       return jobOpeningList;
+    } 
 }

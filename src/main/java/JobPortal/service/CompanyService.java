@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.LinkedHashMap;
 import java.util.Objects;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -87,10 +88,21 @@ public class CompanyService {
    {
         LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
         map.put("company", company);
-        map.put("jobopening", jobopening);
+        map.put("jobopenings", jobopening);
         Gson gson = new Gson();
         String jobOpeningJson = gson.toJson(map, LinkedHashMap.class);
         return jobOpeningJson;
+   }
+
+   public String getAllJobOpenings(Company company, List<JobOpening> jobOpeningList)
+   {
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
+        map.put("company", company);
+        map.put("jobopenings", jobOpeningList);
+        Gson gson = new Gson();
+        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningsJson;
+
    }
     
 

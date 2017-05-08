@@ -7,12 +7,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import java.io.IOException;
 
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
@@ -30,13 +33,14 @@ public class JobOpeningController {
     private CompanyService companyService;
     
     @Autowired 
-    private JobOpeningService jobopeningService;
+    private JobOpeningService jobOpeningService;
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 
     @RequestMapping(value ="/jobopenings", method = RequestMethod.POST)
-    public ResponseEntity createJobOpening(HttpServletResponse response, @RequestParam Map<String,String> params) 
+    public ResponseEntity createJobOpening(HttpServletResponse response, 
+                                    @RequestParam Map<String,String> params) 
     {
         String companyId = params.get("companyId");
         
@@ -58,7 +62,7 @@ public class JobOpeningController {
         String salary = params.get("salary");
         String responsibilties = params.get("responsibilities");
       
-        JobOpening jobopening = jobopeningService.createJobOpening(company, title, description, 
+        JobOpening jobopening = jobOpeningService.createJobOpening(company, title, description, 
                                     responsibilties, location, salary);
         if (jobopening == null) {
             log.error("job opening is null");
@@ -69,6 +73,25 @@ public class JobOpeningController {
                                             new HttpHeaders(), HttpStatus.OK);
 
     }
+
+     @RequestMapping(value ="/company/{companyId}/jobopenings", method = RequestMethod.GET)
+     public ResponseEntity getJobOpeningsInCompany( HttpServletResponse response, 
+                                            @PathVariable String companyId)
+    {
+        Company company = companyService.getCompany(Integer.valueOf(companyId));
+        
+        if (company == null)
+        {
+            //return with error here
+        }
+
+        List<JobOpening> jobOpeningList = new ArrayList<>();
+        jobOpeningList = jobOpeningService.getJobOpeningsInCompany(companyId);
+        return new ResponseEntity<>(companyService.getAllJobOpenings(company, jobOpeningList),
+                                    new HttpHeaders(), HttpStatus.OK);
+    }
+
+    
 
     /*
     @RequestMapping(value ="/jobopening", method = RequestMethod.POST)
