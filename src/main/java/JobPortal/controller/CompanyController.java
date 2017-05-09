@@ -15,10 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import JobPortal.model.User;
+import JobPortal.service.UserService;
 import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
+import JobPortal.model.JobOpening;
+import JobPortal.service.JobOpeningService;
 
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +41,13 @@ public class CompanyController {
 
     @Autowired
     private CompanyService companyService;
+    
+    @Autowired 
+    private JobOpeningService jobOpeningService;
+
+    @Autowired
+    private UserService userService;
+
 
     @RequestMapping( value = "/company/{companyId}", method = RequestMethod.GET)
     public ResponseEntity getCompany(HttpServletResponse response, 
@@ -44,14 +57,11 @@ public class CompanyController {
         ModelAndView modelAndView = null;
         ModelMap model = new ModelMap();
         Company company = companyService.getCompany(companyId);
-
-        model.addAttribute("companyId", company.getCompanyId());
-        model.addAttribute("companyname", company.getCompanyname());
-        model.addAttribute("website", company.getWebsite());
-        model.addAttribute("location", company.getLocation());
-        model.addAttribute("logo_image_url", company.getLogo_image_url());
-        model.addAttribute("description", company.getDescription());
-        return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
+        List<JobOpening> jobOpeningList = new ArrayList<>();
+        jobOpeningList = jobOpeningService.getJobOpeningsInCompany(String.valueOf(companyId));
+        int no_of_openings = jobOpeningList.size(); 
+        return new ResponseEntity<>(companyService.getCompany(company, no_of_openings), 
+                        new HttpHeaders(), HttpStatus.OK);
 
     }
 
@@ -64,7 +74,7 @@ public class CompanyController {
         {
                 //TODO : Raise Bad Req exception here
                 log.error("parameters required");
-        }
+        }         
         String companyName = params.get("companyName");
         String website = params.get("website");
         String description = params.get("description");
@@ -72,6 +82,14 @@ public class CompanyController {
         String logoImageUrl = params.get("logoImageUrl");
         String password = params.get("password");
         String companyEmail = params.get("companyEmail");
+
+        if (userService.getUser(companyEmail) != null) {
+           log.error("user email already exists");
+            //todo throw exception here
+           return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+
+        }
+
         
         Company company = companyService.createCompany(companyName, 
                         website, location,logoImageUrl, description, password, companyEmail);

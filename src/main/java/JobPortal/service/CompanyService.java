@@ -104,6 +104,18 @@ public class CompanyService {
         return jobOpeningsJson;
 
    }
+
+   public String getCompany(Company company, int size )
+   {
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
+        map.put("company", company);
+        map.put("no_of_openings", size);
+        Gson gson = new Gson();
+        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningsJson;
+
+   }
+
     
 
 

@@ -33,7 +33,7 @@ public class Company {
     @Column(name="password")
     private String password;
     
-    @Column(name="companyemail")
+    @Column(name="companyemail", unique = true)
     private String companyemail;
 
     /*
