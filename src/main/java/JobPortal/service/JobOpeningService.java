@@ -99,6 +99,8 @@ public class JobOpeningService {
             List<Integer> jobIds = new ArrayList<>();
             List<Integer> companiesList = new ArrayList<>();
             List<Integer> locationsList = new ArrayList<>();
+            List<Integer> salaryList = new ArrayList<>();
+
             //Check if company list is present
             if (!companynames.equals("")) {
                 List<String> companynamesList = Arrays.asList(companynames.split("\\s*,\\s*"));
@@ -111,11 +113,13 @@ public class JobOpeningService {
             }
             if (!(salaryStart.equals("") && salaryEnd.equals("")))
             {
-                
+               salaryList = jobOpeningDao.findJobOpeningsInCompanyBySalary
+                            (Integer.valueOf(salaryStart), Integer.valueOf(salaryEnd));
             }
 
             Collection<Integer> collection1 = companiesList;
             Collection<Integer> collection2 = locationsList;
+            Collection<Integer> collection3 = salaryList;
             Collection<Integer> intersection = new ArrayList<Integer>();
             if (!companiesList.isEmpty() && !locationsList.isEmpty()) {
                 intersection = (Collection<Integer>)CollectionUtils.
@@ -125,12 +129,19 @@ public class JobOpeningService {
             } else if (!locationsList.isEmpty() && companynames.equals("")) {
                 intersection = locationsList;
             }
-        
+       
+            if (!salaryStart.equals("")) {
+                if (companynames.equals("") && locations.equals("")) {
+                    intersection = salaryList;
+                } else {
+                    intersection = (Collection<Integer>)CollectionUtils.
+                                        intersection(intersection, collection3);
+                }
+                    
+            }
             jobIds.addAll(intersection);
             if (!jobIds.isEmpty()) {
                 jobOpenings = jobOpeningDao.findJobOpeningsInCompanyByFilter(jobIds);
-                jobIds.forEach(System.out::println);
- 
             }
             
             LinkedHashMap<Object, Object> map = new LinkedHashMap<>();

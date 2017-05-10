@@ -143,8 +143,6 @@ public class JobOpeningController {
         //check if location is present in search
         if (params.get("locations") != null) {
             locations = params.get("locations");
-            log.error("locations is not empty ");
-            log.error(locations);
             
         }
         
