@@ -3,6 +3,7 @@ package JobPortal.service;
 import JobPortal.Dao.JobOpeningDao;
 import JobPortal.model.JobOpening;
 
+
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import javax.transaction.Transactional;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Collection;
 
 import com.google.gson.Gson;
+
 
 /**
  * Created by ipshamohanty on 5/1/17.
@@ -88,6 +96,43 @@ public class JobOpeningService {
                                                     String salaryStart, String salaryEnd)
     {
             List<JobOpening> jobOpenings = new ArrayList<>();
+            List<Integer> jobIds = new ArrayList<>();
+            List<Integer> companiesList = new ArrayList<>();
+            List<Integer> locationsList = new ArrayList<>();
+            //Check if company list is present
+            if (!companynames.equals("")) {
+                List<String> companynamesList = Arrays.asList(companynames.split("\\s*,\\s*"));
+                companiesList = jobOpeningDao.findJobOpeningsInCompanyByName(companynamesList); 
+            } 
+            if (!locations.equals("")) {
+                List<String> locationNamesList = Arrays.asList(locations.split("\\s*,\\s*"));
+                locationsList = jobOpeningDao.
+                                findJobOpeningsInCompanyByLocation(locationNamesList); 
+            }
+            if (!(salaryStart.equals("") && salaryEnd.equals("")))
+            {
+                
+            }
+
+            Collection<Integer> collection1 = companiesList;
+            Collection<Integer> collection2 = locationsList;
+            Collection<Integer> intersection = new ArrayList<Integer>();
+            if (!companiesList.isEmpty() && !locationsList.isEmpty()) {
+                intersection = (Collection<Integer>)CollectionUtils.
+                                        intersection(collection1, collection2);
+            } else if (!companiesList.isEmpty() && locations.equals("")) {
+                intersection = companiesList;
+            } else if (!locationsList.isEmpty() && companynames.equals("")) {
+                intersection = locationsList;
+            }
+        
+            jobIds.addAll(intersection);
+            if (!jobIds.isEmpty()) {
+                jobOpenings = jobOpeningDao.findJobOpeningsInCompanyByFilter(jobIds);
+                jobIds.forEach(System.out::println);
+ 
+            }
+            
             LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
             map.put("jobopenings", jobOpenings);
             Gson gson = new Gson();
