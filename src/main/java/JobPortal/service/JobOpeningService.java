@@ -70,7 +70,7 @@ public class JobOpeningService {
     public List<JobOpening> getJobOpeningsInCompany(String companyId, List<String> statuslist)
     {
        List<JobOpening> jobOpeningList = new ArrayList<>();
-       jobOpeningList = jobOpeningDao.findJobOpeningsInCompany(companyId);
+       jobOpeningList = jobOpeningDao.findJobOpeningsInCompanyByStatus(statuslist);
        return jobOpeningList;
     } 
 

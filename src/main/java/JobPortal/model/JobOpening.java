@@ -31,6 +31,9 @@ public class JobOpening {
 
     @Column(name = "companyname")
     private String companyname;
+
+    @Column(name = "status")
+    private String status;
    
     public int getJobId() {
         return jobId;
@@ -96,6 +99,15 @@ public class JobOpening {
     public void setSalary(int salary) {
         this.salary = salary;
     }
+   
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
    public JobOpening(int companyId, String companyname, String title, String description,
                      String responsibilities, String location, int salary)
@@ -107,6 +119,7 @@ public class JobOpening {
         this.location = location;
         this.salary = salary;
         this.companyname = companyname;
+        this.status = "Open";
    } 
 
    public JobOpening() {
