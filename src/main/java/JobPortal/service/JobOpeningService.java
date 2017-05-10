@@ -14,6 +14,9 @@ import javax.transaction.Transactional;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+import com.google.gson.Gson;
 
 /**
  * Created by ipshamohanty on 5/1/17.
@@ -79,6 +82,17 @@ public class JobOpeningService {
     {
        JobOpening jobOpening = jobOpeningDao.findJobOpeningByJobId(Integer.valueOf(jobId));
        return jobOpening;  
+    }
+
+    public String getJobOpeningsByFilters(String companynames, String locations,
+                                                    String salaryStart, String salaryEnd)
+    {
+            List<JobOpening> jobOpenings = new ArrayList<>();
+            LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+            map.put("jobopenings", jobOpenings);
+            Gson gson = new Gson();
+            String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+            return jobOpeningsJson; 
     }
  
 }

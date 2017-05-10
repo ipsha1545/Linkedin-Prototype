@@ -172,4 +172,25 @@ public class CompanyController {
        
     }
 
+    @RequestMapping( value = "/company", method = RequestMethod.GET)
+    public ResponseEntity getCompanyByEmail(@RequestParam String email,
+                                            @RequestParam String password) 
+    {
+
+        Company company = companyService.getCompany(email);
+        if (company != null) {
+            if (company.getPassword().equals(password)) {
+                return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
+            } else {
+                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HttpError(400,
+                 "wrong credentials").toString());            
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+                   "Company does not exist").toString());          
+
+        }
+
+    }
+
 }

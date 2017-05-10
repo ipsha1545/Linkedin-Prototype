@@ -124,5 +124,41 @@ public class JobOpeningController {
           return new ResponseEntity<>(companyService.getJobopeningInCompany(company, jobOpening),
                                     new HttpHeaders(), HttpStatus.OK);
         
-    } 
+    }
+
+     @RequestMapping(value ="/jobopenings", method = RequestMethod.GET)
+     public ResponseEntity getJobOpeningsInCompany( HttpServletResponse response,
+                                    @RequestParam Map<String, String> params) 
+     {
+        String companynames = "";
+        String locations = ""; 
+        String salaryStart = "";
+        String salaryEnd = "";
+    
+        //check if company name is present in search
+        if (params.get("companynames") != null) {
+            companynames = params.get("companynames");
+        } 
+        
+        //check if location is present in search
+        if (params.get("locations") != null) {
+            locations = params.get("locations");
+        }
+        
+        //check if salary range is present 
+        if (params.get("salary") != null) {
+             salaryStart = params.get("gt");
+             salaryEnd = params.get("lt");
+        }
+        
+        List<JobOpening> jobOpenings = new ArrayList<>();
+        return new ResponseEntity<>(jobOpeningService.getJobOpeningsByFilters(companynames, 
+                            locations, salaryStart, salaryEnd), new HttpHeaders(),
+                                    HttpStatus.OK);
+        
+     }
+
+ 
+
+    
 }
