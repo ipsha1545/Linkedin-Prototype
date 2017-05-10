@@ -39,8 +39,15 @@ public class CompanyService {
     public Company getCompany(int companyId){
 
         Company company = null;
-        return companyDao.findBycompanyId(companyId);
+        return companyDao.findByCompanyId(companyId);
     }
+
+    public Company getCompany(String email){
+
+        Company company = null;
+        return companyDao.findByCompanyEmail(email);
+    }
+
 
     public Company createCompany(String companyname, String website, String location, 
                      String logoImageUrl, String description, String password, String companyemail) 
@@ -67,7 +74,7 @@ public class CompanyService {
    public Company updateCompany(String companyName, String website, String location, 
                                     String logoImageUrl, String description, int companyId)
    {
-        Company company = companyDao.findBycompanyId(companyId);
+        Company company = companyDao.findByCompanyId(companyId);
         if (company == null) {
             //todo : company not found 
             //raise error

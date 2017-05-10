@@ -2,6 +2,7 @@ package JobPortal.Dao;
 
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 
@@ -14,7 +15,10 @@ import JobPortal.model.Company;
 public interface CompanyDao extends CrudRepository<Company, Integer> {
 
 
-    public Company findBycompanyId(int companyId);
+    public Company findByCompanyId(int companyId);
+
+    @Query(value = "select * from jobportal.company where companyemail = ?", nativeQuery = true)
+    public Company findByCompanyEmail(String companyemail);
 
 
 

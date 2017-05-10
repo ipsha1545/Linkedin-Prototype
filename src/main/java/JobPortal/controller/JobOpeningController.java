@@ -22,6 +22,7 @@ import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
 import JobPortal.model.JobOpening;
 import JobPortal.service.JobOpeningService;
+import JobPortal.exception.HttpError;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,14 +48,18 @@ public class JobOpeningController {
         
         if (companyId == null) 
         {
-            //return the request with error and prompt for company id
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested company with id " + companyId + " does not exist").
+            toString());
         }
 
         Company company = companyService.getCompany(Integer.valueOf(companyId));
         
         if (company == null)
         {
-            //return with error here
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested company with id " + companyId + " does not exist").
+            toString());
         }
         
         String title = params.get("title");
@@ -66,10 +71,9 @@ public class JobOpeningController {
         JobOpening jobopening = jobOpeningService.createJobOpening(company, title, description, 
                                     responsibilties, location, salary);
         if (jobopening == null) {
-            log.error("job opening is null");
-        } else {
-            log.error(jobopening.getCompanyname());
-        }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
+            "Server error, please try again").toString());
+        } 
         return new ResponseEntity<>(companyService.getJobopeningInCompany(company,jobopening), 
                                             new HttpHeaders(), HttpStatus.OK);
 
@@ -84,7 +88,9 @@ public class JobOpeningController {
         
         if (company == null)
         {
-            //return with error here
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested company with id " + companyId + " does not exist").
+            toString());
         }
         
         if (params.get("statuslists") != null) {

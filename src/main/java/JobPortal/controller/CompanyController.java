@@ -21,6 +21,7 @@ import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
 import JobPortal.model.JobOpening;
 import JobPortal.service.JobOpeningService;
+import JobPortal.exception.HttpError;
 
 import java.util.Map;
 import java.util.List;
@@ -53,10 +54,14 @@ public class CompanyController {
     public ResponseEntity getCompany(HttpServletResponse response, 
                                 @PathVariable int companyId) {
 
-
-        ModelAndView modelAndView = null;
-        ModelMap model = new ModelMap();
         Company company = companyService.getCompany(companyId);
+
+        if (null == company) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested company with id " + companyId + " does not exist").
+            toString());
+
+        }
         List<JobOpening> jobOpeningList = new ArrayList<>();
         jobOpeningList = jobOpeningService.getJobOpeningsInCompany(String.valueOf(companyId));
         int no_of_openings = jobOpeningList.size(); 
@@ -72,8 +77,10 @@ public class CompanyController {
         if (params.get("companyName") == null || params.get("website") == null 
                              || params.get("description") == null)
         {
-                //TODO : Raise Bad Req exception here
-                log.error("parameters required");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested details company name or website or description does not exist").
+            toString());
+
         }         
         String companyName = params.get("companyName");
         String website = params.get("website");
@@ -83,11 +90,11 @@ public class CompanyController {
         String password = params.get("password");
         String companyEmail = params.get("companyEmail");
 
-        if (userService.getUser(companyEmail) != null) {
-           log.error("user email already exists");
-            //todo throw exception here
-           return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
-
+        if (userService.getUser(companyEmail) != null || 
+                        companyService.getCompany(companyEmail) != null ) {
+           log.error("email already exists");
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HttpError(400,
+            "Sorry the email address is already registered").toString());
         }
 
         
@@ -102,7 +109,13 @@ public class CompanyController {
         model.addAttribute("logo_image_URL", company.getLogo_image_URL());
         model.addAttribute("description", company.getDescription());
         */
-        return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HttpError(400,
+                    e.getMessage()).toString());
+ 
+        }
     }
 
     @RequestMapping(value= "/company/{companyId}", method = RequestMethod.PUT)
@@ -113,9 +126,12 @@ public class CompanyController {
         
         Company company = companyService.getCompany(companyId);
 
-        if (company == null) {
-            //raise an exception
-        }
+        if (null == company) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested company with id " + companyId + " does not exist").
+            toString());
+
+        }       
         String companyName = params.get("companyname") == null ?
                                 company.getCompanyname() : params.get("companyname"); 
         String website = params.get("website") == null ?
@@ -132,7 +148,28 @@ public class CompanyController {
         return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 
     }
+    
+    @RequestMapping(value= "/company/check", method = RequestMethod.POST)
+    public ResponseEntity checkCompany(@RequestParam String email) 
+    {
+        try {
 
+            User userEmail = userService.getUser(email);
+            Company companyEmail = companyService.getCompany(email);
 
-   
+            if (userEmail == null && companyEmail == null) {
+                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HttpError(400,
+                "email exists").
+                toString());
+            }
+
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
+                "Error creating company").toString());
+        }
+       
+    }
+
 }
