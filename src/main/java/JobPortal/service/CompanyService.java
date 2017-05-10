@@ -112,7 +112,7 @@ public class CompanyService {
 
    }
 
-   public String getCompany(Company company, int size )
+    public String getCompany(Company company, int size)
    {
         LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
         map.put("company", company);

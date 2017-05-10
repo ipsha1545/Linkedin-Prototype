@@ -69,10 +69,16 @@ public class JobOpeningService {
 
     public List<JobOpening> getJobOpeningsInCompany(String companyId, List<String> statuslist)
     {
-       String query = "select * from job_openings where job_openings.companyId = " + companyId;
        List<JobOpening> jobOpeningList = new ArrayList<>();
        jobOpeningList = jobOpeningDao.findJobOpeningsInCompany(companyId);
        return jobOpeningList;
     } 
+
+
+    public JobOpening getJobOpeningByJobId(String jobId)
+    {
+       JobOpening jobOpening = jobOpeningDao.findJobOpeningByJobId(Integer.valueOf(jobId));
+       return jobOpening;  
+    }
  
 }

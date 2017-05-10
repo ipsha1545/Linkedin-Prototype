@@ -110,23 +110,19 @@ public class JobOpeningController {
                                     new HttpHeaders(), HttpStatus.OK);
     }
 
-    
-
-    /*
-    @RequestMapping(value ="/jobopening", method = RequestMethod.POST)
-    public void updateJobOpening(HttpServletResponse response, 
-                                    @RequestParam Map<String,String> params) 
+    @RequestMapping(value ="/jobopenings/{jobId}", method = RequestMethod.GET)
+    public ResponseEntity getJobOpening(HttpServletResponse response, @PathVariable String jobId) 
     {
-        log.error("Creating an opening");
-    }
-
-
-    @RequestMapping(value ="/jobopening", method = RequestMethod.GET)
-    public void getJobOpening(HttpServletResponse response, 
-                                    @RequestParam Map<String,String> params) 
-    {
-        log.error("Creating an opening");
-    }
-    */
-
+          JobOpening jobOpening = jobOpeningService.getJobOpeningByJobId(jobId);
+          if (jobOpening == null) 
+          {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+            "Sorry the requested opening with id " + jobId + " does not exist").
+            toString());
+          }
+          Company company = companyService.getCompany(jobOpening.getCompanyId());
+          return new ResponseEntity<>(companyService.getJobopeningInCompany(company, jobOpening),
+                                    new HttpHeaders(), HttpStatus.OK);
+        
+    } 
 }
