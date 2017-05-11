@@ -47,7 +47,7 @@ public class UserService {
         try {
             User userEmail = userDao.findUserByEmail(email);
             User userPhone = userDao.findUserByPhone(phone);
-            Company companyEmail = companyDao.findCompanyByEmail(email);
+            Company companyEmail = companyDao.findByCompanyEmail(email);
 
 
             ModelMap model = new ModelMap();
@@ -64,21 +64,21 @@ public class UserService {
             } else {
                 model.addAttribute("code", 400);
                 model.addAttribute("msg", "email exists");
-            return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
-        }
+                return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
+            }
 
         } catch (Exception ex) {
-        ModelMap model = new ModelMap();
-        model.addAttribute("code", 400);
-        model.addAttribute("msg", "Error creating user");
-        return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
-    }
+            ModelMap model = new ModelMap();
+            model.addAttribute("code", 400);
+            model.addAttribute("msg", "Error creating user");
+            return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
+        }
 
     }
 
     public ResponseEntity createUser(String firstname, String lastname, String phone, String email, String password,
-                                             String address, String education, String skills, Float experience,
-                                             String introduction, String status, String image) {
+                                     String address, String education, String skills, Float experience,
+                                     String introduction, String status, String image) {
 
         User user;
 
@@ -200,7 +200,7 @@ public class UserService {
 
         }
 
-return  null;
+        return  null;
 
     }
 
