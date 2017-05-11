@@ -3,6 +3,12 @@ package JobPortal.service;
 import JobPortal.Dao.JobOpeningDao;
 import JobPortal.model.JobOpening;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.jpa.Search;
 
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +39,9 @@ import com.google.gson.Gson;
 @Service
 @Transactional
 public class JobOpeningService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private JobOpeningDao jobOpeningDao;
@@ -150,5 +159,43 @@ public class JobOpeningService {
             String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
             return jobOpeningsJson; 
     }
+
+
+    public String searchJobOpenings(String text) {
+
+        // get the full text entity manager
+        FullTextEntityManager fullTextEntityManager =
+          org.hibernate.search.jpa.Search.
+          getFullTextEntityManager(entityManager);
+        
+        // create the query using Hibernate Search query DSL
+        QueryBuilder queryBuilder = 
+          fullTextEntityManager.getSearchFactory()
+          .buildQueryBuilder().forEntity(JobOpening.class).get();
+        
+        //a very basic query by keywords
+        org.apache.lucene.search.Query query =
+          queryBuilder
+            .keyword()
+            .onFields("title")
+            .matching(text)
+            .createQuery();
+
+        // wrap Lucene query in an Hibernate Query object
+        org.hibernate.search.jpa.FullTextQuery jpaQuery =
+          fullTextEntityManager.createFullTextQuery(query, JobOpening.class);
+      
+        // execute search and return results (sorted by relevance as default)
+        @SuppressWarnings("unchecked")
+        List<JobOpening> results = jpaQuery.getResultList();
+        System.out.println("results " + results.size());
+        
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+        map.put("jobopenings", results);
+        Gson gson = new Gson();
+        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningsJson;
+   } 
+
  
 }

@@ -125,11 +125,22 @@ public class JobOpeningController {
                                     new HttpHeaders(), HttpStatus.OK);
         
     }
+        
 
-     @RequestMapping(value ="/jobopenings", method = RequestMethod.GET)
-     public ResponseEntity getJobOpeningsInCompany( HttpServletResponse response,
+    @RequestMapping(value ="/jobopenings/search", method = RequestMethod.GET)
+    public ResponseEntity searchJobOpenings(HttpServletResponse response, 
+                                            @RequestParam String q)
+    {
+        return new ResponseEntity<>(jobOpeningService.searchJobOpenings(q),
+                                    new HttpHeaders(), HttpStatus.OK);
+
+    }
+
+
+    @RequestMapping(value ="/jobopenings", method = RequestMethod.GET)
+    public ResponseEntity getJobOpeningsInCompany( HttpServletResponse response,
                                     @RequestParam Map<String, String> params) 
-     {
+    {
         String companynames = "";
         String locations = ""; 
         String salaryStart = "";
@@ -157,7 +168,7 @@ public class JobOpeningController {
                             locations, salaryStart, salaryEnd), new HttpHeaders(),
                                     HttpStatus.OK);
         
-     }
+    }
 
  
 

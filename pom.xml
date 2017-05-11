@@ -66,6 +66,18 @@
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
         </dependency>
+        <!-- Maven artifact identifier for Hibernate Search -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>4.5.1.Final</version>
+        </dependency>
+
+        <!-- Optional: to use JPA 2.1 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

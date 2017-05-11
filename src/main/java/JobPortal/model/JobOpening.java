@@ -2,6 +2,11 @@ package JobPortal.model;
 
 import javax.persistence.*;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
+
+@Indexed
 @Entity
 @Table(name="job_openings")
 public class JobOpening {
@@ -13,7 +18,8 @@ public class JobOpening {
     
     @Column(name = "companyId")
     private int companyId;
-
+    
+    @Field
     @Column(name = "title")
     private String title;
     
