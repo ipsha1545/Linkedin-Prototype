@@ -79,50 +79,6 @@ public class JobOpeningController {
 
     }
     
-    //Creating job openings by giving job id.Need to remove the auto-generated tag of jobId 
-    
-     @RequestMapping(value="/JobOpening/{jobId}", method = RequestMethod.POST)
-     public @ResponseBody ResponseEntity createJobOpeningforuser(@PathVariable("jobId")Integer jobId,
-    		    							  @RequestParam(value="company_id") Integer company_id,
-                                              @RequestParam(value="description") String description,
-                                              @RequestParam(value="location") String location,
-                                              @RequestParam(value="responsibilities")String  responsibilities,
-                                              @RequestParam(value="salary")Integer salary,
-                                              @RequestParam(value="status")String status,
-                                              @RequestParam(value="title")String title
-                                              ) {
-    	 
-    	// System.out.println(jobId + company_id + description);
-
-         JobOpening p = jobOpeningRepository.findOne(jobId);
-         
-       //	 System.out.println(p);
-
-         
-         HashMap<String,List> abc = new HashMap<String,List>();
-         HashMap<String,java.lang.Object> passengerlistobject = new HashMap<String,java.lang.Object>();
-         
-         try {
-
-             p = jobOpeningRepository.save(new JobOpening(jobId, company_id, description,location, responsibilities, salary,status,title));
-             System.out.println("p "+ p.getCompanyId()+ " " + p.getCompanyname()+ " " + p.getDescription());
-             HashMap<String,java.lang.Object> passengerlistobject1 = new HashMap<String,java.lang.Object>();
-             passengerlistobject1.put("jobOpening ",p);
-             System.out.println("jobOpening "+passengerlistobject1);
-
-              return ResponseEntity.ok(p);
-               
-
-
-         }catch(Exception ex){
-
-        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
-        	            "Sorry the requested jobopening cannot be created").
-        	            toString());
-         }
-
-
-
      @RequestMapping(value ="/company/{companyId}/jobopenings", method = RequestMethod.GET)
      public ResponseEntity getJobOpeningsInCompany( HttpServletResponse response, 
                                             @PathVariable String companyId,
