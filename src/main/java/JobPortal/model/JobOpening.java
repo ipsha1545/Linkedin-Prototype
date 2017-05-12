@@ -22,19 +22,23 @@ public class JobOpening {
     @Field
     @Column(name = "title")
     private String title;
-    
+   
+    @Field 
     @Column(name = "description")
     private String description;
 
+    @Field
     @Column(name = "responsibilities")
     private String responsibilities;
 
+    @Field
     @Column(name = "location")
     private String location;
 
     @Column(name = "salary")
     private int salary;
-
+    
+    @Field
     @Column(name = "companyname")
     private String companyname;
 

@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.TermMatchingContext;
 
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Collection;
 
 import com.google.gson.Gson;
@@ -162,7 +165,8 @@ public class JobOpeningService {
 
 
     public String searchJobOpenings(String text) {
-
+    
+        boolean emptyListReturned = false;
         // get the full text entity manager
         FullTextEntityManager fullTextEntityManager =
           org.hibernate.search.jpa.Search.
@@ -173,25 +177,58 @@ public class JobOpeningService {
           fullTextEntityManager.getSearchFactory()
           .buildQueryBuilder().forEntity(JobOpening.class).get();
         
-        //a very basic query by keywords
-        org.apache.lucene.search.Query query =
-          queryBuilder
-            .keyword()
-            .onFields("title")
-            .matching(text)
-            .createQuery();
+        List<String> queryList = Arrays.asList(text.split("\\s*,\\s*"));
+        Map<String, List<JobOpening>> jobMap = new HashMap<String, List<JobOpening>>();
+        for (String queryText : queryList) 
+        {
+             //a very basic query by keywords
+            org.apache.lucene.search.Query query =
+              queryBuilder
+                .keyword()
+                .onFields("title", "location", "responsibilities", "description" , "companyname")
+                .matching(queryText)
+                .createQuery();
 
-        // wrap Lucene query in an Hibernate Query object
-        org.hibernate.search.jpa.FullTextQuery jpaQuery =
-          fullTextEntityManager.createFullTextQuery(query, JobOpening.class);
+             // wrap Lucene query in an Hibernate Query object
+            org.hibernate.search.jpa.FullTextQuery jpaQuery =
+              fullTextEntityManager.createFullTextQuery(query, JobOpening.class);
       
-        // execute search and return results (sorted by relevance as default)
-        @SuppressWarnings("unchecked")
-        List<JobOpening> results = jpaQuery.getResultList();
-        System.out.println("results " + results.size());
+            // execute search and return results (sorted by relevance as default)
+            @SuppressWarnings("unchecked")
+            List<JobOpening> results = jpaQuery.getResultList();
         
+            if (results.size() == 0)
+            {
+                emptyListReturned = true;
+                break;
+            }
+            jobMap.put(queryText,results);
+        }
+      
+        Collection<JobOpening> intersection = new ArrayList<JobOpening>();
+ 
+        for (String key : jobMap.keySet())
+        {
+            if (emptyListReturned)
+                break;
+            Collection<JobOpening> jobCollection = jobMap.get(key);
+            if (!intersection.isEmpty()) {
+                intersection = (Collection<JobOpening>)CollectionUtils.
+                                        intersection(intersection, jobCollection);
+                if (intersection.isEmpty()) {
+                    emptyListReturned = true;
+                    break;
+                }
+            } else {
+                intersection = jobCollection;
+            }
+
+        }
+        List<JobOpening> results  = new ArrayList<>();
+        results.addAll(intersection);
         LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
-        map.put("jobopenings", results);
+        if (!emptyListReturned) 
+            map.put("jobopenings", results);
         Gson gson = new Gson();
         String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
         return jobOpeningsJson;
