@@ -128,7 +128,7 @@ public class UserController {
         }
 
         if(params.get("status") !=null){
-            rs = userService.updateUser(Integer.valueOf(id), "skills", params.get("status"));
+            rs = userService.updateUser(Integer.valueOf(id), "status", params.get("status"));
         }
 
         return rs;
