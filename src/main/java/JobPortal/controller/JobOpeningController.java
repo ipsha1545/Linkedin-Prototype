@@ -169,6 +169,19 @@ public class JobOpeningController {
                                     HttpStatus.OK);
         
     }
+    
+    @RequestMapping(value ="/user/jobs", method = RequestMethod.GET)
+    public ResponseEntity getAllOpenJobs()
+    {
+        return new ResponseEntity(jobOpeningService.getAllOpenJobs(), HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value ="/filters", method = RequestMethod.GET)
+    public ResponseEntity getFilters()
+    {
+        return new ResponseEntity(jobOpeningService.getAllFilters(), HttpStatus.OK);
+    }
 
  
 
