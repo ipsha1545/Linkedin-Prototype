@@ -19,7 +19,8 @@ public interface CompanyDao extends CrudRepository<Company, Integer> {
 
     @Query(value = "select * from jobportal.company where companyemail = ?", nativeQuery = true)
     public Company findByCompanyEmail(String companyemail);
-
-
+    
+    @Query(value = "select distinct companyname from jobportal.company", nativeQuery = true)
+    List<String> getAllCompanies();
 
 }
