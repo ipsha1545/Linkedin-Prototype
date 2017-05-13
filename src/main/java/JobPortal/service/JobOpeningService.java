@@ -162,6 +162,28 @@ public class JobOpeningService {
             String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
             return jobOpeningsJson; 
     }
+    
+    
+     public List<JobOpening> getAllOpenJobs() {
+        List<JobOpening> jobOpeningList = new ArrayList<>();
+        jobOpeningList = jobOpeningDao.getAllJobs();
+
+        return jobOpeningList;
+    }
+
+    public ModelMap getAllFilters() {
+        List<String> companyList = new ArrayList<>();
+        companyList = companyDao.getAllCompanies();
+
+        List<String> locationList = new ArrayList<>();
+        locationList = jobOpeningDao.getAllLocations();
+
+        ModelMap m = new ModelMap();
+        m.addAttribute("companies", companyList);
+        m.addAttribute("locations", locationList);
+
+        return m;
+    }
 
 
     public String searchJobOpenings(String text) {
