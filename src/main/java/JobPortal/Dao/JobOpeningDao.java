@@ -41,7 +41,8 @@ public interface JobOpeningDao extends CrudRepository<JobOpening, Integer> {
     @Query(value = "select * from jobportal.job_openings where status = 'Open'", nativeQuery = true)
     List<JobOpening> getAllJobs();
 
-
+    @Query(value = "select distinct location from jobportal.job_openings", nativeQuery = true)
+    List<String> getAllLocations();
 
     
 }
