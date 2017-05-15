@@ -143,8 +143,11 @@ public class CompanyController {
         String logoImageUrl = params.get("logoImageUrl") == null ?
                                 company.getLogo_image_url() : params.get("logoImageUrl");
         
+        String password = params.get("password") == null ?
+                company.getPassword() : params.get("password");
+        
         company = companyService.updateCompany(companyName, 
-                        website, location,logoImageUrl, description, companyId);
+                        website, location,logoImageUrl, description, password, companyId);
         return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 
     }
