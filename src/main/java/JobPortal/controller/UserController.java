@@ -134,6 +134,14 @@ public class UserController {
         return rs;
     }
 
+    
+    @RequestMapping(value= "/user/addImage", method = RequestMethod.POST)
+    public ResponseEntity addImage(@RequestParam(value="image") String image,
+                                   @RequestParam(value="userid") String userid){
+
+        return userService.addImage(Integer.valueOf(userid), image);
+
+    }
 
 
 }
