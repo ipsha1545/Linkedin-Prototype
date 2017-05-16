@@ -256,5 +256,38 @@ public class JobOpeningService {
         return jobOpeningsJson;
    } 
 
+    
+     public ResponseEntity updateJob(int jobid, int companyId, String companyname, String title, String description,
+                                    String responsibilities, String location, int salary, String status) {
+
+        JobOpening jobOpening = jobOpeningDao.findJobOpeningByJobId(jobid);
+
+        if (jobOpening == null) {
+            //todo : jobopening not found
+
+            ModelMap m = new ModelMap();
+            m.addAttribute("msg", "job opening not exists");
+
+            return new ResponseEntity(jobOpening, HttpStatus.BAD_REQUEST);
+        }
+        try {
+
+            jobOpening = new JobOpening(companyId, companyname, title, description, responsibilities,
+                    location, salary, status);
+
+
+            jobOpening.setJobId(jobid);
+            jobOpening = jobOpeningDao.save(jobOpening);
+
+
+            return new ResponseEntity(jobOpening, HttpStatus.OK);
+
+        } catch(Exception ex) {
+            //TODO : Handle exception
+            return new ResponseEntity(jobOpening, HttpStatus.BAD_REQUEST);
+        }
+
+
+    }
  
 }
