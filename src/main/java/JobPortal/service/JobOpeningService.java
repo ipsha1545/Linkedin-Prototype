@@ -1,38 +1,21 @@
 package JobPortal.service;
 
+import JobPortal.Dao.CompanyDao;
 import JobPortal.Dao.JobOpeningDao;
+import JobPortal.model.Company;
 import JobPortal.model.JobOpening;
+import com.google.gson.Gson;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.TermMatchingContext;
-
-import JobPortal.model.Company;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.servlet.ModelAndView;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import javax.transaction.Transactional;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collection;
-
-import com.google.gson.Gson;
+import java.util.*;
 
 
 /**
