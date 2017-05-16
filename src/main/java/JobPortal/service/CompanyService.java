@@ -72,7 +72,7 @@ public class CompanyService {
     }
 
    public Company updateCompany(String companyName, String website, String location, 
-                                    String logoImageUrl, String description, int companyId)
+                                    String logoImageUrl, String description, String password, int companyId)
    {
         Company company = companyDao.findByCompanyId(companyId);
         if (company == null) {
@@ -81,7 +81,8 @@ public class CompanyService {
         } 
         
        try {
-            company = new Company(companyName, website, location, logoImageUrl, description);
+           String email = company.getCompanyemail();
+            company = new Company(companyName, website, location, logoImageUrl, description, password, email);
             company.setCompanyId(companyId);
             company = companyDao.save(company);
             return company;
