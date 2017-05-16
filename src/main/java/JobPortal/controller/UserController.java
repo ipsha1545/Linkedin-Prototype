@@ -1,5 +1,8 @@
 package JobPortal.controller;
 
+import java.sql.Blob;
+import org.hibernate.engine.jdbc.BlobProxy;
+
 import JobPortal.model.User;
 import JobPortal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import java.io.IOException;
 import java.util.Map;
+import JobPortal.exception.HttpError;
 
 
 @Controller
@@ -137,11 +146,23 @@ public class UserController {
     
     @RequestMapping(value= "/user/addImage", method = RequestMethod.POST)
     public ResponseEntity addImage(@RequestParam(value="image") String image,
-                                   @RequestParam(value="userid") String userid){
+                                   @RequestParam String userid)
+    {
 
-        return userService.addImage(Integer.valueOf(userid), image);
+        try {
+
+            User user = userService.getUserByID(Integer.valueOf(userid));
+            byte[] photoBytes = userService.readBytesFromFile(image);
+            user.setPhoto(photoBytes);
+            return new ResponseEntity<>(userService.addImage(user), new HttpHeaders(), HttpStatus.OK);
+        } catch (Exception e) {
+        
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
+            "Server error, please try again").toString());
+        }
 
     }
+
 
 
 }

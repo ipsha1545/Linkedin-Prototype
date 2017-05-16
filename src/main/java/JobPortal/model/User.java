@@ -1,6 +1,7 @@
 package JobPortal.model;
 
 import javax.persistence.*;
+import java.sql.Blob;
 //import JobPortal.service.*;
 
 /**
@@ -55,6 +56,10 @@ public class User {
 
     @Column(name="pending_applications",columnDefinition="Decimal(10,0) default '0'")
     private int pending_applications;
+    
+    @Column
+    @Lob
+    private byte[] photo;
 
     //constructors
 
@@ -196,6 +201,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+ 
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 
 }

@@ -12,6 +12,11 @@ import org.springframework.ui.ModelMap;
 
 import javax.transaction.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * Created by anvita on 4/28/17.
  */
@@ -204,15 +209,13 @@ public class UserService {
 
     }
     
-    public ResponseEntity addImage(int userid, String image) {
+    public ResponseEntity addImage(User user) {
 
-        User user = userDao.findByuserId(userid);
 
         try{
 
             if(user != null){
 
-                user.setImage(image);
                 userDao.save(user);
                 return new ResponseEntity(HttpStatus.OK);
 
@@ -225,6 +228,22 @@ public class UserService {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
+    }
+    
+
+    public static byte[] readBytesFromFile(String filePath) throws IOException {
+        
+        try { File inputFile = new File(filePath);
+        FileInputStream inputStream = new FileInputStream(inputFile);
+         
+        byte[] fileBytes = new byte[(int) inputFile.length()];
+        inputStream.read(fileBytes);
+        inputStream.close();
+         
+        return fileBytes;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
