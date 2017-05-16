@@ -203,5 +203,28 @@ public class UserService {
         return  null;
 
     }
+    
+    public ResponseEntity addImage(int userid, String image) {
+
+        User user = userDao.findByuserId(userid);
+
+        try{
+
+            if(user != null){
+
+                user.setImage(image);
+                userDao.save(user);
+                return new ResponseEntity(HttpStatus.OK);
+
+            }else{
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+
+        }catch(Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 }
