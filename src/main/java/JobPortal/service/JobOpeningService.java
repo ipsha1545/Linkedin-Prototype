@@ -14,6 +14,11 @@ import org.springframework.ui.ModelMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.TermMatchingContext;
+
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -31,6 +36,9 @@ public class JobOpeningService {
 
     @Autowired
     private JobOpeningDao jobOpeningDao;
+
+    @Autowired
+    private CompanyDao companyDao;
 
     public JobOpeningService() {
 

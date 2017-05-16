@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 
 import JobPortal.model.Company;
 
+import java.util.List;
+
 /**
  * Created by ipshamohanty on 5/1/17.
  */
