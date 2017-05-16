@@ -1,10 +1,9 @@
 package JobPortal.model;
 
-import javax.persistence.*;
-
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
+
+import javax.persistence.*;
 
 @Indexed
 @Entity
@@ -130,9 +129,23 @@ public class JobOpening {
         this.salary = salary;
         this.companyname = companyname;
         this.status = "Open";
-   } 
+   }
 
-   public JobOpening() {
+
+    public JobOpening(int companyId, String companyname, String title, String description,
+                      String responsibilities, String location, int salary, String status)
+    {
+        this.companyId = companyId;
+        this.title = title;
+        this.description = description;
+        this.responsibilities = responsibilities;
+        this.location = location;
+        this.salary = salary;
+        this.companyname = companyname;
+        this.status = status;
+    }
+
+    public JobOpening() {
    
    } 
 }
