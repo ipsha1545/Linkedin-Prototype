@@ -183,7 +183,46 @@ public class JobOpeningController {
         return new ResponseEntity(jobOpeningService.getAllFilters(), HttpStatus.OK);
     }
 
- 
+  @RequestMapping(value= "/jobopening/{jobid}", method = RequestMethod.PUT)
+        public ResponseEntity updateJobOpening(HttpServletResponse response, @PathVariable String jobid,
+                @RequestParam Map<String,String> params)
+        {
+
+            int jobId = Integer.valueOf(jobid);
+            JobOpening jobOpening = jobOpeningService.getJobOpening(jobId);
+
+        if (null == jobOpening) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+                    "Sorry the requested job with id " + jobId + " does not exist").
+                    toString());
+
+        }
+        String description = params.get("description") == null ?
+                jobOpening.getDescription() : params.get("description");
+
+        String location = params.get("location") == null ?
+                jobOpening.getLocation() : params.get("location");
+
+        String responsibilities = params.get("responsibilities") == null ?
+                jobOpening.getResponsibilities() : params.get("responsibilities");
+
+        int salary = params.get("salary") == null ?
+                jobOpening.getSalary() : Integer.valueOf(params.get("salary"));
+
+        String status = params.get("status") == null ?
+                jobOpening.getStatus() : params.get("status");
+
+        String title = params.get("title") == null ?
+                jobOpening.getTitle() : params.get("title");
+
+        int companyId = jobOpening.getCompanyId();
+        String companyname = jobOpening.getCompanyname();
+
+      return jobOpeningService.updateJob(jobId, companyId, companyname, title, description,
+                responsibilities, location, salary, status);
+
+
+    }
 
     
 }
