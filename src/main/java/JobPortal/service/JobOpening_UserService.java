@@ -110,7 +110,7 @@ public class JobOpening_UserService {
         }
     }
 
-    public ResponseEntity apply_Job(int userid, int jobid) {
+    public ResponseEntity apply_Job(int userid, int jobid, String resume) {
 
         try {
 
@@ -127,6 +127,11 @@ public class JobOpening_UserService {
 
                     int companyId = jobOpeningDao.findByJobId(jobid).getCompanyId();
                     jobOpening_user = new JobOpening_User(userid, jobid, companyId, "applied", false, false);
+                    
+                    if(resume != null){
+                        jobOpening_user.setResume(resume);
+                    }
+                    
                     jobOpening_userDao.save(jobOpening_user);
 
                     return new ResponseEntity(jobOpening_user, HttpStatus.OK);
@@ -134,6 +139,11 @@ public class JobOpening_UserService {
                 } else {
 
                     jobOpening_user.setStatus("applied");
+                    
+                     if(resume != null){
+                        jobOpening_user.setResume(resume);
+                    }
+                    
                     jobOpening_userDao.save(jobOpening_user);
 
                     return new ResponseEntity(jobOpening_user, HttpStatus.OK);
