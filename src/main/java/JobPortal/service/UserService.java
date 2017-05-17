@@ -197,6 +197,14 @@ public class UserService {
                     model.addAttribute("statuscode",200);
                     return new ResponseEntity(model, HttpStatus.OK);
                 }
+                
+                if(parameter.equals("password")){
+                    user.setPassword(value);
+                    userDao.save(user);
+
+                    model.addAttribute("statuscode",200);
+                    return new ResponseEntity(model, HttpStatus.OK);
+                }
 
             }catch(Exception e){
                 model.addAttribute("statuscode",400);
