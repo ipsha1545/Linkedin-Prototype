@@ -139,6 +139,10 @@ public class UserController {
         if(params.get("status") !=null){
             rs = userService.updateUser(Integer.valueOf(id), "status", params.get("status"));
         }
+        
+        if(params.get("password") !=null){
+            rs = userService.updateUser(Integer.valueOf(id), "password", params.get("password"));
+        }
 
         return rs;
     }
