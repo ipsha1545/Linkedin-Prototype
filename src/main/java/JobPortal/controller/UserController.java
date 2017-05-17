@@ -148,24 +148,14 @@ public class UserController {
     }
 
     
-    @RequestMapping(value= "/user/addImage", method = RequestMethod.POST)
+   @RequestMapping(value= "/user/addImage", method = RequestMethod.POST)
     public ResponseEntity addImage(@RequestParam(value="image") String image,
-                                   @RequestParam String userid)
-    {
+                                   @RequestParam(value="userid") String userid){
 
-        try {
-
-            User user = userService.getUserByID(Integer.valueOf(userid));
-            byte[] photoBytes = userService.readBytesFromFile(image);
-            user.setPhoto(photoBytes);
-            return new ResponseEntity<>(userService.addImage(user), new HttpHeaders(), HttpStatus.OK);
-        } catch (Exception e) {
-        
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
-            "Server error, please try again").toString());
-        }
+        return userService.addImage(Integer.valueOf(userid), image);
 
     }
+
 
 
 
