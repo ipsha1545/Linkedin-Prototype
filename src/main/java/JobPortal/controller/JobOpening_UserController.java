@@ -130,6 +130,6 @@ public class JobOpening_UserController {
             resume = null;
         }
 
-        return jobOpening_userService.apply_Job(Integer.valueOf(params.get("userid")), Integer.valueOf(params.get("jobid")));
+        return jobOpening_userService.apply_Job(Integer.valueOf(params.get("userid")), Integer.valueOf(params.get("jobid")), resume);
     }
 }
