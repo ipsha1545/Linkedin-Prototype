@@ -217,13 +217,15 @@ public class UserService {
 
     }
     
-    public ResponseEntity addImage(User user) {
+    public ResponseEntity addImage(int userid, String image) {
 
+        User user = userDao.findByuserId(userid);
 
         try{
 
             if(user != null){
 
+                user.setImage(image);
                 userDao.save(user);
                 return new ResponseEntity(HttpStatus.OK);
 
