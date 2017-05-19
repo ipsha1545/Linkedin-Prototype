@@ -244,6 +244,8 @@ public class JobOpeningService {
             map.put("jobopenings", results);
         Gson gson = new Gson();
         String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+
+        System.out.println(jobOpeningsJson);
         return jobOpeningsJson;
    } 
 

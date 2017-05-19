@@ -131,6 +131,9 @@ public class JobOpeningController {
     public ResponseEntity searchJobOpenings(HttpServletResponse response, 
                                             @RequestParam String q)
     {
+
+        log.error(q);
+        
         return new ResponseEntity<>(jobOpeningService.searchJobOpenings(q),
                                     new HttpHeaders(), HttpStatus.OK);
 

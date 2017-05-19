@@ -2,6 +2,7 @@ package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
 import JobPortal.model.JobOpening;
+import JobPortal.service.EmailService;
 
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,9 @@ public class CompanyService {
     
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private EmailService emailService;
 
     public CompanyService(){
 
@@ -64,6 +68,7 @@ public class CompanyService {
             company = new Company(companyname, website, location, logoImageUrl, description, 
                         password, companyemail);
             Company newCompany = companyDao.save(company);
+            //emailService.sendEmail();
             return newCompany;
         } catch(Exception ex) {
            //TODO : Handle exception  
