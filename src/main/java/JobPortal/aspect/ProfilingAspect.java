@@ -1,11 +1,13 @@
 package JobPortal.aspect; 
 
+import java.util.concurrent.Future;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.util.StopWatch;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.core.annotation.Order;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
+import java.util.List;
+import java.util.Arrays;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -33,38 +37,47 @@ public class ProfilingAspect {
 
     static MimeMessage generateMailMessage;
 
-    //@Autowired  
-    //private CompanyService companyService;
-    /*
-    @Around("methodsToBeProfiled()")
-    public Object profile(ProceedingJoinPoint pjp) throws Throwable {
-        StopWatch sw = new StopWatch(getClass().getSimpleName());
-        try {
-            sw.start(pjp.getSignature().getName());
-            return pjp.proceed();
-        } finally {
-            sw.stop();
-            System.out.println(sw.prettyPrint());
+
+    @AfterReturning("execution(* JobPortal..*JobOpeningService.updateJob(..))")
+    public void afterUpdateJobOpeningAdvice(JoinPoint joinPoint) throws AddressException, MessagingException
+    {
+        int jobId = (int) joinPoint.getArgs()[0];
+        String emails = (String) joinPoint.getArgs()[1];
+        String title = (String) joinPoint.getArgs()[4];
+        String description = (String) joinPoint.getArgs()[5];
+        String responsibilities = (String) joinPoint.getArgs()[6];
+        String location = (String) joinPoint.getArgs()[7];
+        int salary = (int) joinPoint.getArgs()[8];
+        String status = (String) joinPoint.getArgs()[9];
+
+        List<String> emailList = Arrays.asList(emails.split("\\s*,\\s*"));
+        
+        
+       if ( null == emailList || emailList.size() == 0)
+                return ;
+        
+        for (String email : emailList)
+        {
+            System.out.println("update aspect for " + email );
+            String message = "As per our records you have applied for position : " + title + 
+                             "<br>This email is to inform you that the above job opening has been updated. Details are : " +
+                             "<br>Title : " + title + 
+                             "<br>Description : " + description +
+                             "<br>Responsibilties : " + responsibilities +
+                             "<br>Location : " + location +
+                             "<br>Salary : " + String.valueOf(salary) +
+                             "<br>Status : " + status +
+                             "<br><br> Regards,  <br> JobPortal Team <br>";
+            String subject = "JobPortal : Modification in position ";
+            generateAndSendEmail(email, subject, message);
         }
+         
     }
-
-    @Pointcut("execution(public * foo..*.*(..))")
-    public void methodsToBeProfiled(){}
-
-    */
-   @AfterReturning("execution(* JobPortal..*EmailService.*(..))")
-   public void afterFoo(JoinPoint joinPoint) throws AddressException, MessagingException  
-   {    
-        System.out.println("about to send");
-        generateAndSendEmail();
-        System.out.println("foo aspect");
-   }
 
 
    public void setup()
    {
         // Step1
-        System.out.println("\n 1st ===> setup Mail Server Properties..");
         mailServerProperties = System.getProperties();
         mailServerProperties.put("mail.smtp.port", "587");
         mailServerProperties.put("mail.smtp.auth", "true");
@@ -73,23 +86,20 @@ public class ProfilingAspect {
 
    }
 
+    @Async
+    public void generateAndSendEmail(String recipient, String subject, String body) 
+                                throws AddressException, MessagingException 
+    {
 
-    public void generateAndSendEmail() throws AddressException, MessagingException {
- 
-         
         // Step2
-        System.out.println("\n\n 2nd ===> get Mail Session..");
         getMailSession = Session.getDefaultInstance(mailServerProperties, null);
         generateMailMessage = new MimeMessage(getMailSession);
-        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("praneshpg@gmail.com"));
-        //generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("test2@crunchify.com"));
-        generateMailMessage.setSubject("Greetings from Crunchify..");
-        String emailBody = "Test email by Crunchify.com JavaMail API example. " + "<br><br> Regards, <br>Crunchify Admin";
-        generateMailMessage.setContent(emailBody, "text/html");
-        System.out.println("Mail Session has been created successfully..");
+        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+        generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("275jobportal@gmail.com"));
+        generateMailMessage.setSubject(subject);
+        generateMailMessage.setContent(body, "text/html");
  
         // Step3
-        System.out.println("\n\n 3rd ===> Get Session and Send mail");
         Transport transport = getMailSession.getTransport("smtp");
  
         // Enter your correct gmail UserID and Password

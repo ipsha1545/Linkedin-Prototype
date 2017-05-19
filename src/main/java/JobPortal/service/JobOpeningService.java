@@ -250,7 +250,7 @@ public class JobOpeningService {
    } 
 
     
-     public ResponseEntity updateJob(int jobid, int companyId, String companyname, String title, String description,
+     public ResponseEntity updateJob(int jobid, String emails, int companyId, String companyname, String title, String description,
                                     String responsibilities, String location, int salary, String status) {
 
         JobOpening jobOpening = jobOpeningDao.findJobOpeningByJobId(jobid);
@@ -277,7 +277,7 @@ public class JobOpeningService {
 
         } catch(Exception ex) {
             //TODO : Handle exception
-            return new ResponseEntity(jobOpening, HttpStatus.BAD_REQUEST);
+            throw new RuntimeException();
         }
 
 

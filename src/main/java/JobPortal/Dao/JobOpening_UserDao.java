@@ -34,6 +34,10 @@ public interface JobOpening_UserDao extends CrudRepository<JobOpening_User, Inte
     @Query(value = "select * from jobportal.job_openings_user where userId = ?", nativeQuery = true)
     List<JobOpening_User> getInterestedJobs(int userid);
 
+    @Query(value = "select * from jobportal.job_openings_user where jobId = ? AND terminal = 0", nativeQuery = true)
+    List<JobOpening_User> getActiveCompanyApplications(int jobId);
+
+
 
 
 

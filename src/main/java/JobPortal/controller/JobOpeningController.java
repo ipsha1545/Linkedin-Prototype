@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
+import JobPortal.service.JobOpening_UserService;
 import JobPortal.model.JobOpening;
 import JobPortal.service.JobOpeningService;
 import JobPortal.exception.HttpError;
@@ -36,6 +37,9 @@ public class JobOpeningController {
     
     @Autowired 
     private JobOpeningService jobOpeningService;
+
+    @Autowired
+    private JobOpening_UserService jobOpening_UserService;
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -186,13 +190,13 @@ public class JobOpeningController {
         return new ResponseEntity(jobOpeningService.getAllFilters(), HttpStatus.OK);
     }
 
-  @RequestMapping(value= "/jobopening/{jobid}", method = RequestMethod.PUT)
+    @RequestMapping(value= "/jobopening/{jobid}", method = RequestMethod.PUT)
         public ResponseEntity updateJobOpening(HttpServletResponse response, @PathVariable String jobid,
                 @RequestParam Map<String,String> params)
-        {
+    {
 
-            int jobId = Integer.valueOf(jobid);
-            JobOpening jobOpening = jobOpeningService.getJobOpening(jobId);
+        int jobId = Integer.valueOf(jobid);
+        JobOpening jobOpening = jobOpeningService.getJobOpening(jobId);
 
         if (null == jobOpening) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
@@ -220,8 +224,9 @@ public class JobOpeningController {
 
         int companyId = jobOpening.getCompanyId();
         String companyname = jobOpening.getCompanyname();
-
-      return jobOpeningService.updateJob(jobId, companyId, companyname, title, description,
+        
+        String emailList = jobOpening_UserService.getActiveCompanyApplications(jobId);
+        return jobOpeningService.updateJob(jobId, emailList, companyId, companyname, title, description,
                 responsibilities, location, salary, status);
 
 

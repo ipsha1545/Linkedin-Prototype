@@ -145,8 +145,8 @@ public class CompanyController {
         
         String password = params.get("password") == null ?
                 company.getPassword() : params.get("password");
-        
-        company = companyService.updateCompany(companyName, 
+
+        company = companyService.updateCompany(companyName,  
                         website, location,logoImageUrl, description, password, companyId);
         return new ResponseEntity<>(company, new HttpHeaders(), HttpStatus.OK);
 

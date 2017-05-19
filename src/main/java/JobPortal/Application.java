@@ -8,7 +8,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
-import JobPortal.service.EmailService;
 
 /**
  * Created by anvita on 4/18/17.
@@ -17,12 +16,9 @@ import JobPortal.service.EmailService;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer implements CommandLineRunner{
 
-    @Autowired
-    private EmailService emailService;
-    
     @Override
     public void run(String... args) {
-        System.out.println(this.emailService.getHelloMessage());
+    //    System.out.println(this.emailService.getHelloMessage());
     }
     
     /*

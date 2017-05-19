@@ -235,4 +235,34 @@ public class JobOpening_UserService {
         }
     }
 
+    public String getActiveCompanyApplications(int jobid) {
+        String res = "";
+        try {
+
+            JobOpening jobOpening = jobOpeningDao.findJobOpeningByJobId(jobid);
+
+            if (jobOpening != null) {
+                List<JobOpening_User> job_applications = jobOpening_userDao.getActiveCompanyApplications(jobid);
+                Object[] applications = new Object[job_applications.size()];
+
+                //ModelMap m = new ModelMap();
+                //ModelMap all_applications = new ModelMap();
+
+                for(int i = 0; i < job_applications.size(); i++) {
+                    User user = userDao.findByuserId(job_applications.get(i).getUserId());
+                    res += user.getEmail() + ",";
+                }
+                return res;
+            }
+        } catch (Exception e) {
+
+            ModelMap m = new ModelMap();
+            throw new RuntimeException();
+        }
+
+        return res;
+    }
+
+    
+
 }

@@ -2,7 +2,6 @@ package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
 import JobPortal.model.JobOpening;
-import JobPortal.service.EmailService;
 
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +27,6 @@ public class CompanyService {
     
     @Autowired
     private CompanyDao companyDao;
-
-    @Autowired
-    private EmailService emailService;
 
     public CompanyService(){
 
