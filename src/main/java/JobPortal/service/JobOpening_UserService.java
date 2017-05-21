@@ -125,7 +125,7 @@ public class JobOpening_UserService {
     }
 
 
-    public ResponseEntity apply_Job(int userid, int jobid, String resume) {
+        public ResponseEntity apply_Job(int userid, int jobid, String resume) {
 
         try {
 
@@ -141,7 +141,7 @@ public class JobOpening_UserService {
                 if (jobOpening_user == null) {
 
                     int companyId = jobOpeningDao.findByJobId(jobid).getCompanyId();
-                    jobOpening_user = new JobOpening_User(userid, jobid, companyId, "applied", false, false);
+                    jobOpening_user = new JobOpening_User(userid, jobid, companyId, "Applied", false, false);
                     
                     if(resume != null){
                         jobOpening_user.setResume(resume);
@@ -153,7 +153,7 @@ public class JobOpening_UserService {
 
                 } else {
 
-                    jobOpening_user.setStatus("applied");
+                    jobOpening_user.setStatus("Applied");
                     
                      if(resume != null){
                         jobOpening_user.setResume(resume);
