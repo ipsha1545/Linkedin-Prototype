@@ -1,6 +1,8 @@
 package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
+import JobPortal.Dao.JobOpening_UserDao;
+import JobPortal.model.JobOpening_User;
 import JobPortal.Dao.JobOpeningDao;
 import JobPortal.model.Company;
 import JobPortal.model.JobOpening;
