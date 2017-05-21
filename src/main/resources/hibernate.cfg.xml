@@ -1,0 +1,5 @@
+<property name="hibernate.search.default.directory_provider"
+          value="filesystem"/>
+
+<property name="hibernate.search.default.indexBase"
+          value="/var/lucene/indexes"/>

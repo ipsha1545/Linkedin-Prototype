@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="commons-collections-3.2.2-javadoc">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/commons-collections-3.2.2/commons-collections-3.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/Downloads/commons-collections-3.2.2/commons-collections-3.2.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

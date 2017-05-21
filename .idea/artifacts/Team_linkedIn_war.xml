@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Team_linkedIn:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="Team_linkedIn-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Team_linkedIn:war exploded" />
+    </root>
+  </artifact>
+</component>

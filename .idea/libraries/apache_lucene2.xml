@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="apache-lucene2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/apache-lucene.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/hibernate-search-3.0.1.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/hibernate-search-3.4.0.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

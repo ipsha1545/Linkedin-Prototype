@@ -85,5 +85,11 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.6.6" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.6.6" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />
+    <orderEntry type="library" name="apache-lucene1" level="project" />
+    <orderEntry type="library" name="commons-collections-3.2.2-javadoc1" level="project" />
+    <orderEntry type="library" name="gson-2.3.1" level="project" />
+    <orderEntry type="library" name="apache-lucene2" level="project" />
+    <orderEntry type="library" name="hibernate-search-5.6.1.Final" level="project" />
+    <orderEntry type="library" name="resteasy-multipart-provider-2.1-beta-1" level="project" />
   </component>
 </module>

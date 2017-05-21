@@ -1,16 +1,18 @@
 package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
-
 import JobPortal.model.Company;
+import JobPortal.model.JobOpening;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.transaction.Transactional;
-
+import java.util.LinkedHashMap;
+import java.util.List;
 /**
  * Created by ipshamohanty on 5/1/17.
  */
@@ -18,6 +20,7 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class CompanyService {
+    
     @Autowired
     private CompanyDao companyDao;
 
@@ -32,10 +35,19 @@ public class CompanyService {
     public Company getCompany(int companyId){
 
         Company company = null;
-
-        return companyDao.findBycompanyId(companyId);
+        return companyDao.findByCompanyId(companyId);
     }
-    public void createCompany(String companyname, String website, String location, String logo_image_URL, String description){
+
+    public Company getCompany(String email){
+
+        Company company = null;
+        return companyDao.findByCompanyEmail(email);
+    }
+
+
+    public Company createCompany(String companyname, String website, String location, 
+                     String logoImageUrl, String description, String password, String companyemail) 
+    {
 
 
         ModelAndView modelAndView;
@@ -44,23 +56,71 @@ public class CompanyService {
 
         Company company;
 
-        try{
-
-            System.out.println("received company details in company service");
-
-            company = new Company(companyname, website, location, logo_image_URL, description);
-            System.out.println("reached 1");
-
-            companyDao.save(company);
-            System.out.println("reached");
-
-
-        }catch(Exception ex){
-            String message = "Another company with the same number already exists.";
-
+        try {
+            company = new Company(companyname, website, location, logoImageUrl, description, 
+                        password, companyemail);
+            Company newCompany = companyDao.save(company);
+            return newCompany;
+        } catch(Exception ex) {
+           //TODO : Handle exception  
+            return null;
         }
-
     }
+
+   public Company updateCompany(String companyName, String website, String location, 
+                                    String logoImageUrl, String description, String password, int companyId)
+   {
+        Company company = companyDao.findByCompanyId(companyId);
+        if (company == null) {
+            //todo : company not found 
+            //raise error
+        } 
+        
+       try {
+           String email = company.getCompanyemail();
+            company = new Company(companyName, website, location, logoImageUrl, description, password, email);
+            company.setCompanyId(companyId);
+           company = companyDao.save(company);
+            return company;
+        } catch(Exception ex) {
+           //TODO : Handle exception  
+            return null;
+        }
+   }
+   
+   public String getJobopeningInCompany(Company company, JobOpening jobopening)
+   {
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
+        map.put("company", company);
+        map.put("jobopenings", jobopening);
+        Gson gson = new Gson();
+        String jobOpeningJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningJson;
+   }
+
+   public String getJobOpenings(Company company, List<JobOpening> jobOpeningList)
+   {
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
+        map.put("company", company);
+        map.put("jobopenings", jobOpeningList);
+        Gson gson = new Gson();
+        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningsJson;
+
+   }
+
+    public String getCompany(Company company, int size)
+   {
+        LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object> ();
+        map.put("company", company);
+        map.put("no_of_openings", size);
+        Gson gson = new Gson();
+        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+        return jobOpeningsJson;
+
+   }
+
+    
 
 
 

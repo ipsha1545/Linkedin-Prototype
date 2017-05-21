@@ -24,23 +24,44 @@ public class Company {
     @Column(name="location")
     private String location;
 
-    @Column(name="logo_image_URL")
-    private String Logo_image_URL;
+    @Column(name="logo_image_url")
+    private String logo_image_url;
 
     @Column(name="description")
     private String description;
+    
+    @Column(name="password")
+    private String password;
+    
+    @Column(name="companyemail", unique = true)
+    private String companyemail;
 
+    /*
+    @Column(name="password")
+    private String password;
+    */
     //constructors
 
 
-    public Company(String companyname, String website, String location, String logo_image_URL, String description) {
+    public Company(String companyname, String website, String location, String logo_image_url, 
+                        String description) {
         this.companyname = companyname;
         this.website = website;
         this.location = location;
-        Logo_image_URL = logo_image_URL;
+        this.logo_image_url = logo_image_url;
         this.description = description;
     }
 
+     public Company(String companyname, String website, String location, String logo_image_url, 
+                        String description, String password, String companyemail) {
+        this.companyname = companyname;
+        this.website = website;
+        this.location = location;
+        this.logo_image_url = logo_image_url;
+        this.description = description;
+        this.password = password;
+        this.companyemail = companyemail;
+    }
     public int getCompanyId() {
         return companyId;
     }
@@ -73,12 +94,12 @@ public class Company {
         this.location = location;
     }
 
-    public String getLogo_image_URL() {
-        return Logo_image_URL;
+    public String getLogo_image_url() {
+        return logo_image_url;
     }
 
-    public void setLogo_image_URL(String logo_image_URL) {
-        Logo_image_URL = logo_image_URL;
+    public void setLogo_image_url(String logo_image_url) {
+        this.logo_image_url = logo_image_url;
     }
 
     public String getDescription() {
@@ -88,6 +109,24 @@ public class Company {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+     public String getCompanyemail() {
+        return companyemail;
+    }
+
+    public void setCompanyemail(String email) {
+        this.companyemail = email;
+    }
+
+    
 
     public Company(){
 

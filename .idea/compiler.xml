@@ -23,10 +23,12 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="netgloo" />
+        <module name="Team_linkedIn" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="netgloo" target="1.8" />
+      <module name="Team_linkedIn" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
