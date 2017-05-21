@@ -104,7 +104,7 @@ public class JobOpening_UserController {
     public ResponseEntity getUser_interestedJobs(@PathVariable(value="id") String id) {
 
         try{
-           Object obj = jobOpening_userService.getUserJobStatus(Integer.valueOf(id));
+            Object obj = jobOpening_userService.getUserJobStatus(Integer.valueOf(id));
 
             ModelMap m = new ModelMap();
             m.addAttribute("jobStatus", obj);
