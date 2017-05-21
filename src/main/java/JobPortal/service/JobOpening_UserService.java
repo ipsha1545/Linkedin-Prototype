@@ -193,18 +193,19 @@ public class JobOpening_UserService {
     }
 
     public ResponseEntity getCompanyApplications(int jobid) {
-        try {
+  try {
 
             JobOpening jobOpening = jobOpeningDao.findJobOpeningByJobId(jobid);
 
             if(jobOpening != null){
                 List<JobOpening_User> job_applications = jobOpening_userDao.getCompanyApplication(jobid);
-                Object[] applications = new Object[job_applications.size()];
+                List<ModelMap> applications = new ArrayList<>();
 
-                ModelMap m = new ModelMap();
                 ModelMap all_applications = new ModelMap();
 
                 for(int i = 0; i < job_applications.size(); i++){
+                    ModelMap m = new ModelMap();
+
                     m.addAttribute("applicationID", job_applications.get(i).getJob_userId());
                     m.addAttribute("jobid", job_applications.get(i).getJobId());
                     m.addAttribute("companyid", job_applications.get(i).getCompanyId());
@@ -215,7 +216,8 @@ public class JobOpening_UserService {
                     m.addAttribute("resume", job_applications.get(i).getResume());
                     m.addAttribute("user", userDao.findByuserId(job_applications.get(i).getUserId()));
 
-                    applications[i] = m;
+                    applications.add(m);
+
                 }
 
                 all_applications.addAttribute("company_application", applications);
@@ -263,6 +265,183 @@ public class JobOpening_UserService {
         return res;
     }
 
-    
+    public ResponseEntity changeStatus(int applicationId, String status) {
+
+        try {
+
+            JobOpening_User jobOpening_user = jobOpening_userDao.findByJob_userId(applicationId);
+
+            if(status.contains("Company")){
+
+                if(status.contains("Cancel")) {
+                    if(jobOpening_user.getStatus().equals("Applied") || jobOpening_user.getStatus().equals("Offered") ||
+                            jobOpening_user.getStatus().contains("Schedule")){
+
+                        int jobId = jobOpening_user.getJobId();
+                        List<JobOpening_User> offerJobs = jobOpening_userDao.getOfferJobs(jobId);
+
+                        if(offerJobs.size() == 0){
+                            if(jobOpening_user.getStatus().equals("Applied")){
+                                User u = userDao.findByuserId(jobOpening_user.getUserId());
+                                int p = u.getPending_applications();
+                                u.setPending_applications(p-1);
+                                userDao.save(u);
+                            }
+
+                            jobOpening_user.setStatus(status);
+                            jobOpening_user.setTerminal(true);
+                            jobOpening_userDao.save(jobOpening_user);
+
+                            //Update Non terminal applications
+                            List<JobOpening_User> nonTerminal = jobOpening_userDao.getNonTerminalApplications(jobId);
+                            for(int i = 0; i < nonTerminal.size(); i++){
+                                nonTerminal.get(i).setInterested(false);
+                                nonTerminal.get(i).setStatus(status);
+                                jobOpening_userDao.save(nonTerminal.get(i));
+                            }
+
+                            User user = userDao.findByuserId(jobOpening_user.getUserId());
+                            ModelMap m = new ModelMap();
+                            m.addAttribute("status", "Cancelled by company");
+                            m.addAttribute("user", user);
+
+                            return new ResponseEntity(m, HttpStatus.OK);
+                        }else{
+                            ModelMap m = new ModelMap();
+                            m.addAttribute("code", 400);
+                            m.addAttribute("msg", "Job has one or more applications in offer accepted state");
+                            return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+                        }
+                    }else{
+                        System.out.println("cannot cancel");
+                        return new ResponseEntity("Cannot cancel", HttpStatus.BAD_REQUEST);
+                    }
+
+                }
+
+                if(status.contains("Schedule")) {
+                    if (jobOpening_user.getStatus().equals("Applied")) {
+
+                        if(jobOpening_user.getStatus().equals("Applied")){
+                            User u = userDao.findByuserId(jobOpening_user.getUserId());
+                            int p = u.getPending_applications();
+                            u.setPending_applications(p-1);
+                            userDao.save(u);
+                        }
+
+                        jobOpening_user.setStatus("Schedule Interview");
+                        jobOpening_userDao.save(jobOpening_user);
+
+                        User user = userDao.findByuserId(jobOpening_user.getUserId());
+                        ModelMap m = new ModelMap();
+                        m.addAttribute("status", "Schedule Interview");
+                        m.addAttribute("user", user);
+
+                        return new ResponseEntity(m, HttpStatus.OK);
+
+                    } else {
+                        System.out.println("cannot schedule");
+                        return new ResponseEntity("Cannot schedule", HttpStatus.BAD_REQUEST);
+                    }
+                }
+
+                if(status.contains("Reject")) {
+
+                    if(jobOpening_user.getStatus().equals("Applied") || jobOpening_user.getStatus().equals("Interview Accepted")){
+
+                        if(jobOpening_user.getStatus().equals("Applied")){
+                            User u = userDao.findByuserId(jobOpening_user.getUserId());
+                            int p = u.getPending_applications();
+                            u.setPending_applications(p-1);
+                            userDao.save(u);
+                        }
+
+                        jobOpening_user.setStatus("Rejected");
+                        jobOpening_user.setTerminal(true);
+                        jobOpening_userDao.save(jobOpening_user);
+
+                        User user = userDao.findByuserId(jobOpening_user.getUserId());
+                        ModelMap m = new ModelMap();
+                        m.addAttribute("status", "Rejected");
+                        m.addAttribute("user", user);
+
+                        return new ResponseEntity(m, HttpStatus.OK);
+                    }else{
+
+                        return new ResponseEntity("Cannot reject", HttpStatus.BAD_REQUEST);
+                    }
+                }
+
+
+                if(status.contains("Offered")) {
+
+                    if(jobOpening_user.getStatus().equals("Interview Accepted")){
+                        jobOpening_user.setStatus("Offered");
+                        jobOpening_userDao.save(jobOpening_user);
+
+                        User user = userDao.findByuserId(jobOpening_user.getUserId());
+                        ModelMap m = new ModelMap();
+                        m.addAttribute("status", "Offered");
+                        m.addAttribute("user", user);
+
+                        return new ResponseEntity(m, HttpStatus.OK);
+                    }else{
+
+                        return new ResponseEntity("Cannot reject", HttpStatus.BAD_REQUEST);
+                    }
+                }
+
+
+            }else if(status.contains("User")){
+
+                if(status.contains("Interview")) {
+
+                    if(status.contains("Accept")) {
+                        jobOpening_user.setStatus("Interview Accepted");
+                        jobOpening_userDao.save(jobOpening_user);
+
+                    }else if(status.contains("Refuse")){
+                        jobOpening_user.setStatus("Interview Refused");
+                        jobOpening_userDao.save(jobOpening_user);
+                    }
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+
+                if(status.contains("Cancel")){
+
+                    if(jobOpening_user.getStatus().equals("Applied")){
+                        User u = userDao.findByuserId(jobOpening_user.getUserId());
+                        int p = u.getPending_applications();
+                        u.setPending_applications(p-1);
+                        userDao.save(u);
+                    }
+
+                    jobOpening_user.setStatus("Cancelled by user");
+                    jobOpening_userDao.save(jobOpening_user);
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+
+                if(status.contains("Offer")){
+                    if(status.contains("Accepted")){
+                        jobOpening_user.setStatus("OfferAccepted");
+                        jobOpening_user.setTerminal(true);
+                        jobOpening_userDao.save(jobOpening_user);
+                        return new ResponseEntity(HttpStatus.OK);
+
+                    }else if(status.contains("Rejected")){
+                        jobOpening_user.setStatus("OfferRejected");
+                        jobOpening_user.setTerminal(true);
+                        jobOpening_userDao.save(jobOpening_user);
+                        return new ResponseEntity(HttpStatus.OK);
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+
 
 }
