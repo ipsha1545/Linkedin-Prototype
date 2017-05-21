@@ -93,23 +93,37 @@ public class JobOpening_UserService {
         }
     }
 
-    public HashMap getUserJobStatus(int userid){
+      public Object getUserJobStatus(int userid){
         try{
 
             List<JobOpening_User> jobStatus = jobOpening_userDao.getUserJobStatus(userid);
 
-            HashMap<String, String> hm = new HashMap<>();
+            Object obj[] = new Object[jobStatus.size()];
 
             for(int i = 0; i < jobStatus.size(); i++){
-                hm.put(String.valueOf(jobStatus.get(i).getJobId()), jobStatus.get(i).getStatus());
+                ModelMap m = new ModelMap();
+                m.addAttribute("applicationId", jobStatus.get(i).getJob_userId());
+                m.addAttribute("jobId", jobStatus.get(i).getJobId());
+                m.addAttribute("userId", jobStatus.get(i).getUserId());
+                m.addAttribute("status", jobStatus.get(i).getStatus());
+                obj[i] = m;
             }
 
-            return hm;
+            return obj;
+
+//            HashMap<String, HashMap<String, String>> hm = new HashMap<>();
+//
+//            for(int i = 0; i < jobStatus.size(); i++){
+//                HashMap<String, String> m = new HashMap<>();
+//                m.put(String.valueOf(jobStatus.get(i).getJob_userId()), jobStatus.get(i).getStatus());
+//                hm.put(String.valueOf(jobStatus.get(i).getJobId()), m);
+//            }
 
         }catch(Exception e){
             return null;
         }
     }
+
 
     public ResponseEntity apply_Job(int userid, int jobid, String resume) {
 
