@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -101,14 +100,14 @@ public class JobOpening_UserController {
 
     }
 
-        @RequestMapping(value ="/userJob/interestedJobs/{id}", method = RequestMethod.GET)
+    @RequestMapping(value ="/userJob/interestedJobs/{id}", method = RequestMethod.GET)
     public ResponseEntity getUser_interestedJobs(@PathVariable(value="id") String id) {
 
         try{
-            HashMap<String, String> jobid_status = jobOpening_userService.getUserJobStatus(Integer.valueOf(id));
+           Object obj = jobOpening_userService.getUserJobStatus(Integer.valueOf(id));
 
             ModelMap m = new ModelMap();
-            m.addAttribute("jobStatus", jobid_status);
+            m.addAttribute("jobStatus", obj);
             m.addAttribute("interests", jobOpening_userService.getUserInterestJobs(Integer.valueOf(id)));
 
             return new ResponseEntity(m, HttpStatus.OK);
@@ -130,6 +129,19 @@ public class JobOpening_UserController {
             resume = null;
         }
 
+
         return jobOpening_userService.apply_Job(Integer.valueOf(params.get("userid")), Integer.valueOf(params.get("jobid")), resume);
     }
+
+    @RequestMapping(value ="/userJob/changeStatus", method = RequestMethod.POST)
+    public ResponseEntity changeStatus(@RequestParam Map<String,String> params) {
+
+        int applicationId = Integer.valueOf(params.get("applicationId"));
+        String status = params.get("status");
+
+       // return jobOpening_userService.changeStatus(applicationId, status);
+        return jobOpening_userService.changeStatus(applicationId, status);
+    }
+
+
 }
