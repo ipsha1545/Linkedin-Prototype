@@ -1,9 +1,12 @@
 package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
+import JobPortal.Dao.JobOpeningDao;
+import JobPortal.Dao.JobOpening_UserDao;
 import JobPortal.Dao.UserDao;
-import JobPortal.model.User;
 import JobPortal.model.Company;
+import JobPortal.model.JobOpening_User;
+import JobPortal.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import javax.transaction.Transactional;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by anvita on 4/28/17.
@@ -30,6 +32,12 @@ public class UserService {
 
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private JobOpeningDao jobOpeningDao;
+
+    @Autowired
+    private JobOpening_UserDao jobOpening_userDao;
 
     public UserService() {
 
@@ -90,8 +98,6 @@ public class UserService {
         try {
             User userPhone = userDao.findUserByPhone(phone);
             User userEmail = userDao.findUserByEmail(email);
-
-            System.out.println("request recieved in user service");
 
             if (userEmail == null) {
                 if (userPhone == null) {
@@ -197,9 +203,17 @@ public class UserService {
                     model.addAttribute("statuscode",200);
                     return new ResponseEntity(model, HttpStatus.OK);
                 }
-                
+
                 if(parameter.equals("password")){
                     user.setPassword(value);
+                    userDao.save(user);
+
+                    model.addAttribute("statuscode",200);
+                    return new ResponseEntity(model, HttpStatus.OK);
+                }
+
+                if(parameter.equals("experience")){
+                    user.setExperience(Float.valueOf(value));
                     userDao.save(user);
 
                     model.addAttribute("statuscode",200);
@@ -216,11 +230,10 @@ public class UserService {
         return  null;
 
     }
-    
+
     public ResponseEntity addImage(int userid, String image) {
 
         User user = userDao.findByuserId(userid);
-
         try{
 
             if(user != null){
@@ -232,25 +245,48 @@ public class UserService {
             }else{
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
+        }catch(Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    public ResponseEntity getUserInterviews(int userid) {
+
+        try{
+            List<JobOpening_User> interview_jobs = jobOpening_userDao.getUserInterviews(userid);
+
+            Object obj[] = new Object[interview_jobs.size()];
+
+            for(int i = 0; i < interview_jobs.size(); i++){
+                ModelMap m = new ModelMap();
+                m.addAttribute("applicationId", interview_jobs.get(i).getJob_userId());
+                m.addAttribute("job", jobOpeningDao.findByJobId(interview_jobs.get(i).getJobId()));
+                m.addAttribute("userId", interview_jobs.get(i).getUserId());
+                m.addAttribute("status", interview_jobs.get(i).getStatus());
+                m.addAttribute("interested", interview_jobs.get(i).isInterested());
+                m.addAttribute("terminal", interview_jobs.get(i).isTerminal());
+                m.addAttribute("resume", interview_jobs.get(i).getResume());
+                obj[i] = m;
+            }
+
+            return new ResponseEntity(obj, HttpStatus.OK);
 
         }catch(Exception e){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-
     }
-    
+
 
     public static byte[] readBytesFromFile(String filePath) throws IOException {
-        
+
         try { File inputFile = new File(filePath);
-        FileInputStream inputStream = new FileInputStream(inputFile);
-         
-        byte[] fileBytes = new byte[(int) inputFile.length()];
-        inputStream.read(fileBytes);
-        inputStream.close();
-         
-        return fileBytes;
+            FileInputStream inputStream = new FileInputStream(inputFile);
+
+            byte[] fileBytes = new byte[(int) inputFile.length()];
+            inputStream.read(fileBytes);
+            inputStream.close();
+
+            return fileBytes;
         } catch (Exception e) {
             return null;
         }
