@@ -1,8 +1,5 @@
 package JobPortal.controller;
 
-import java.sql.Blob;
-import org.hibernate.engine.jdbc.BlobProxy;
-
 import JobPortal.model.User;
 import JobPortal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import java.io.IOException;
 import java.util.Map;
-import JobPortal.exception.HttpError;
 
 
 @Controller
@@ -35,7 +26,7 @@ public class UserController {
 
     @RequestMapping(value= "/users", method = RequestMethod.GET)
     public ResponseEntity getByEmail(@RequestParam(value="email", required = true) String email,
-                                          @RequestParam(value="password", required = true) String password) {
+                                     @RequestParam(value="password", required = true) String password) {
 
 
         User user = userService.getUser(email);
@@ -79,17 +70,17 @@ public class UserController {
 
     @RequestMapping(value= "/users", method = RequestMethod.POST)
     public ResponseEntity create(@RequestParam(value="firstname", required = true) String firstname,
-                                         @RequestParam(value="lastname", required = true) String lastname,
-                                         @RequestParam(value="email", required = true) String email,
-                                         @RequestParam(value="password", required = true) String password,
-                                         @RequestParam(value="image", required = false) String image,
-                                         @RequestParam(value="introduction", required = false) String introduction,
-                                         @RequestParam(value="experience", required = true) Float experience,
-                                         @RequestParam(value="status", required = true) String status,
-                                         @RequestParam(value="education", required = true) String education,
-                                         @RequestParam(value="skills", required = true) String skills,
-                                         @RequestParam(value="address", required = true) String address,
-                                         @RequestParam(value="phone", required = true) String phone
+                                 @RequestParam(value="lastname", required = true) String lastname,
+                                 @RequestParam(value="email", required = true) String email,
+                                 @RequestParam(value="password", required = true) String password,
+                                 @RequestParam(value="image", required = false) String image,
+                                 @RequestParam(value="introduction", required = false) String introduction,
+                                 @RequestParam(value="experience", required = true) Float experience,
+                                 @RequestParam(value="status", required = true) String status,
+                                 @RequestParam(value="education", required = true) String education,
+                                 @RequestParam(value="skills", required = true) String skills,
+                                 @RequestParam(value="address", required = true) String address,
+                                 @RequestParam(value="phone", required = true) String phone
 
 
     ) {
@@ -139,24 +130,32 @@ public class UserController {
         if(params.get("status") !=null){
             rs = userService.updateUser(Integer.valueOf(id), "status", params.get("status"));
         }
-        
+
         if(params.get("password") !=null){
             rs = userService.updateUser(Integer.valueOf(id), "password", params.get("password"));
+        }
+
+        if(params.get("experience") !=null){
+            rs = userService.updateUser(Integer.valueOf(id), "experience", params.get("experience"));
         }
 
         return rs;
     }
 
-    
-   @RequestMapping(value= "/user/addImage", method = RequestMethod.POST)
+
+    @RequestMapping(value= "/user/addImage", method = RequestMethod.POST)
     public ResponseEntity addImage(@RequestParam(value="image") String image,
-                                   @RequestParam(value="userid") String userid){
+                                   @RequestParam String userid)
+    {
 
         return userService.addImage(Integer.valueOf(userid), image);
 
     }
 
+    @RequestMapping(value= "/user/getInterviews/{id}", method = RequestMethod.GET)
+    public ResponseEntity getUserInterviews(@PathVariable(value="id") String userid) {
+         return userService.getUserInterviews(Integer.valueOf(userid));
 
-
+    }
 
 }
