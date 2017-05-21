@@ -36,6 +36,9 @@ public class JobOpeningService {
 
     @Autowired
     private JobOpeningDao jobOpeningDao;
+    
+    @Autowired
+    private JobOpening_UserDao jobOpeningUserDao;
 
     @Autowired
     private CompanyDao companyDao;
