@@ -282,5 +282,79 @@ public class JobOpeningService {
 
 
     }
+    
+    public ResponseEntity updateJobOpening(int jobid, String status) {
+
+        try {
+            List<JobOpening_User> offerJobs = jobOpeningUserDao.getOfferJobs(jobid);
+
+            if (status.equals("Cancelled")) {
+
+                if (offerJobs.size() == 0) {
+
+                    JobOpening job = jobOpeningDao.findByJobId(jobid);
+                    job.setStatus(status);
+                    jobOpeningDao.save(job);
+
+                    //update non-terminal applications
+                    List<JobOpening_User> nonTerminalApplications = jobOpeningUserDao.getNonTerminalApplications(jobid);
+                    for (int i = 0; i < nonTerminalApplications.size(); i++) {
+                        nonTerminalApplications.get(i).setStatus("Cancelled by Company");
+                        nonTerminalApplications.get(i).setInterested(false);
+                        jobOpeningUserDao.save(nonTerminalApplications.get(i));
+                    }
+
+                    ModelMap m = new ModelMap();
+                    m.addAttribute("code", 200);
+                    m.addAttribute("msg", "Successfully updated");
+                    return new ResponseEntity(m, HttpStatus.OK);
+
+                } else {
+                    ModelMap m = new ModelMap();
+                    m.addAttribute("code", 400);
+                    m.addAttribute("msg", "Job has one or more applications in offer accepted state");
+                    return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+                }
+
+            } else if (status.equals("Filled")) {
+
+                if (offerJobs.size() > 0) {
+
+                    JobOpening job = jobOpeningDao.findByJobId(jobid);
+                    job.setStatus(status);
+                    jobOpeningDao.save(job);
+
+                    //update non-terminal applications
+                    List<JobOpening_User> nonTerminalApplications = jobOpeningUserDao.getNonTerminalApplications(jobid);
+                    for (int i = 0; i < nonTerminalApplications.size(); i++) {
+                        nonTerminalApplications.get(i).setStatus("Cancelled by Company");
+                        nonTerminalApplications.get(i).setInterested(false);
+                        jobOpeningUserDao.save(nonTerminalApplications.get(i));
+                    }
+
+                    ModelMap m = new ModelMap();
+                    m.addAttribute("code", 200);
+                    m.addAttribute("msg", "Successfully updated");
+                    return new ResponseEntity(m, HttpStatus.OK);
+                }else {
+                    ModelMap m = new ModelMap();
+                    m.addAttribute("code", 400);
+                    m.addAttribute("msg", "Job has no application in offer accepted state");
+                    return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+                }
+
+            } else {
+                ModelMap m = new ModelMap();
+                m.addAttribute("code", 400);
+                m.addAttribute("msg", "Invalid update");
+                return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            ModelMap m = new ModelMap();
+            m.addAttribute("code", 400);
+            m.addAttribute("msg", "Error catch");
+            return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+        }
+    }
  
 }
