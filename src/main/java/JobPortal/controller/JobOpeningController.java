@@ -231,6 +231,13 @@ public class JobOpeningController {
 
 
     }
+    
+    @RequestMapping(value ="/jobopenings/updateJobOpening", method = RequestMethod.POST)
+    public ResponseEntity updateJobOpening(@RequestParam(value="jobid") String jobid,
+                                           @RequestParam(value="status") String status)
+    {
+        return jobOpeningService.updateJobOpening(Integer.valueOf(jobid), status);
+    }
 
     
 }
