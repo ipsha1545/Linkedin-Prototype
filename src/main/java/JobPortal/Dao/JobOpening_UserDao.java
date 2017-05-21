@@ -41,7 +41,7 @@ public interface JobOpening_UserDao extends CrudRepository<JobOpening_User, Inte
 //@Query(value = "select * from jobportal.job_openings_user where (status like '%interview%' or status like '%Offer%') and userId = ?", nativeQuery = true)
 //    List<JobOpening_User> getUserInterviews(int userid);
 
-    @Query(value = "select * from jobportal.job_openings_user where (status not IN ('Applied')) and userId = ?", nativeQuery = true)
+    @Query(value = "select * from jobportal.job_openings_user where userId = ?", nativeQuery = true)
     List<JobOpening_User> getUserInterviews(int userid);
 
     @Query(value = "select * from jobportal.job_openings_user where status = 'OfferAccepted' and jobId = ?", nativeQuery = true)
