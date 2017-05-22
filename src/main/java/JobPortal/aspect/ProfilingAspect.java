@@ -95,7 +95,11 @@ public class ProfilingAspect {
    @AfterReturning("execution(* JobPortal..*CompanyService.scheduleInterview(..))")
    public void scheduleInterview(JoinPoint joinPoint) throws Exception
    {
-        this.sendCalendarInvite("Software Engineer", "sandhya.ramanarayanan@sjsu.edu", "20120901T180000", "20120901T180000");
+        String startDate  = (String) joinPoint.getArgs()[5];
+        String endDate = (String) joinPoint.getArgs()[6];
+        String email = (String) joinPoint.getArgs()[3];
+        String title = (String) joinPoint.getArgs()[2];
+        this.sendCalendarInvite(title, email, startDate, endDate);
    }
 
    public void setup()
@@ -136,6 +140,8 @@ public class ProfilingAspect {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmm'00'");
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
             Date test = dateFormat.parse(start);  
+
+            System.out.println("Start date is " + test.toString());
             StringBuffer buffer = sb.append("BEGIN:VCALENDAR\n" +
                     "PRODID:-//Microsoft Corporation//Outlook 9.0 MIMEDIR//EN\n" +
                     "VERSION:2.0\n" +

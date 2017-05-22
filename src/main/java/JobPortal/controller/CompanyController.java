@@ -201,22 +201,36 @@ public class CompanyController {
     public ResponseEntity getCompanyByEmail(@RequestParam String userId,
                                             @RequestParam String jobId,
                                             @RequestParam String location,
-                                            @RequestParam String time)
+                                            @RequestParam String start,
+                                            @RequestParam String end)
     {
 
        int userid = Integer.valueOf(userId); 
        int jobid = Integer.valueOf(jobId);
-       /*
-        User user = userService.getUserByID(userid);
+       
+       
+       User user = userService.getUserByID(userid);
        JobOpening jobOpening = jobOpeningService.getJobOpeningByJobId(jobId);
 
        if (null == user || null == jobOpening) {
          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
-                   "User doesnot exist").toString());      
+                   "User does not exist").toString());      
        }
-        */
-       companyService.scheduleInterview(userid, jobid, location, time); 
-       return new ResponseEntity<>( new HttpHeaders(), HttpStatus.OK);
+
+       String userEmail = user.getEmail();  
+       String title = jobOpening.getTitle();
+       
+        
+       companyService.scheduleInterview(userid, jobid, title, 
+                                    userEmail, location, start, end); 
+       
+       Interview interview = companyService.scheduleInterview(userid, jobid, title, 
+                                    userEmail, location, start, end); 
+       if (null == interview) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
+                 "Server error. Please try again").toString()); 
+       }
+       return new ResponseEntity<>( interview, new HttpHeaders(), HttpStatus.OK);
  
        
     } 
