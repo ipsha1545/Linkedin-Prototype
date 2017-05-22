@@ -21,6 +21,7 @@ import JobPortal.model.Company;
 import JobPortal.service.CompanyService;
 import JobPortal.model.JobOpening;
 import JobPortal.service.JobOpeningService;
+import JobPortal.model.Interview;
 import JobPortal.exception.HttpError;
 
 import java.util.Map;
@@ -195,5 +196,29 @@ public class CompanyController {
         }
 
     }
+
+    @RequestMapping( value = "/company/interview", method = RequestMethod.POST)
+    public ResponseEntity getCompanyByEmail(@RequestParam String userId,
+                                            @RequestParam String jobId,
+                                            @RequestParam String location,
+                                            @RequestParam String time)
+    {
+
+       int userid = Integer.valueOf(userId); 
+       int jobid = Integer.valueOf(jobId);
+       /*
+        User user = userService.getUserByID(userid);
+       JobOpening jobOpening = jobOpeningService.getJobOpeningByJobId(jobId);
+
+       if (null == user || null == jobOpening) {
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+                   "User doesnot exist").toString());      
+       }
+        */
+       companyService.scheduleInterview(userid, jobid, location, time); 
+       return new ResponseEntity<>( new HttpHeaders(), HttpStatus.OK);
+ 
+       
+    } 
 
 }

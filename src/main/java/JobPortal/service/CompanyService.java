@@ -2,6 +2,8 @@ package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
 import JobPortal.model.JobOpening;
+import JobPortal.Dao.InterviewDao;
+import JobPortal.model.Interview;
 
 import JobPortal.model.Company;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +29,9 @@ public class CompanyService {
     
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private InterviewDao interviewDao;
 
     public CompanyService(){
 
@@ -125,7 +130,12 @@ public class CompanyService {
 
    }
 
-    
+  public void scheduleInterview(int userId, int jobId, String location, String time)
+  {
+        String status = "Invitation Sent";
+        Interview interview = new Interview(userId, jobId, location, time, status);
+        interviewDao.save(interview);
+  }    
 
 
 
