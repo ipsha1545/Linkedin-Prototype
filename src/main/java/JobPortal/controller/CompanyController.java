@@ -198,7 +198,7 @@ public class CompanyController {
     }
 
     @RequestMapping( value = "/company/interview", method = RequestMethod.POST)
-    public ResponseEntity getCompanyByEmail(@RequestParam String userId,
+    public ResponseEntity createInterviewInvite(@RequestParam String userId,
                                             @RequestParam String jobId,
                                             @RequestParam String location,
                                             @RequestParam String start,
@@ -207,7 +207,6 @@ public class CompanyController {
 
        int userid = Integer.valueOf(userId); 
        int jobid = Integer.valueOf(jobId);
-       
        
        User user = userService.getUserByID(userid);
        JobOpening jobOpening = jobOpeningService.getJobOpeningByJobId(jobId);
@@ -223,16 +222,35 @@ public class CompanyController {
         
        companyService.scheduleInterview(userid, jobid, title, 
                                     userEmail, location, start, end); 
-       
        Interview interview = companyService.scheduleInterview(userid, jobid, title, 
                                     userEmail, location, start, end); 
-       if (null == interview) {
+
+
+       //Interview interview = companyService.scheduleInterview(userid, jobid, "Analyst", 
+       //                             "sandhya.ramanarayanan@sjsu.edu", location, start, end); 
+       
+      if (null == interview) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
                  "Server error. Please try again").toString()); 
        }
        return new ResponseEntity<>( interview, new HttpHeaders(), HttpStatus.OK);
  
        
-    } 
+    }
+
+    @RequestMapping( value = "/company/interview", method = RequestMethod.GET)
+    public ResponseEntity searchInterviewByStatus(String statuslist)
+    {
+            List<Interview> interviews = companyService.getInterviewByStatus(statuslist);
+            if ( null == interviews ) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
+                 "Server error. Please try again").toString()); 
+                
+            }
+
+            return new ResponseEntity<>(interviews, new HttpHeaders(), HttpStatus.OK);
+    }
+
+     
 
 }

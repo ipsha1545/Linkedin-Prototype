@@ -15,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 import javax.transaction.Transactional;
 
@@ -133,7 +135,7 @@ public class CompanyService {
   public Interview scheduleInterview(int userId, int jobId, String title, String email, 
                              String location, String startTime, String endTime)
   {
-        String status = "Invitation Sent";
+        String status = "InvitationSent";
         Interview interview = new Interview(userId, jobId, location, startTime, status);
         try {
             interview = interviewDao.save(interview);
@@ -141,7 +143,15 @@ public class CompanyService {
         } catch (Exception e) {
             return null;
         }
-  }    
+  } 
+
+ public List<Interview> getInterviewByStatus(String statusList)
+ {
+      List<String> statuslist= Arrays.asList(statusList.split("\\s*,\\s*"));
+      List<Interview> result = new ArrayList<>(); 
+      result = interviewDao.getInterviewByStatus(statuslist);
+      return result; 
+ }   
 
 
 
