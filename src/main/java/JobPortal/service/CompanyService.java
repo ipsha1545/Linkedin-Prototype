@@ -145,13 +145,21 @@ public class CompanyService {
         }
   } 
 
- public List<Interview> getInterviewByStatus(String statusList)
+ public String getInterviewByStatus(String statusList)
  {
       List<String> statuslist= Arrays.asList(statusList.split("\\s*,\\s*"));
       List<Interview> result = new ArrayList<>(); 
-      result = interviewDao.getInterviewByStatus(statuslist);
-      return result; 
- }   
+      try {    
+          result = interviewDao.getInterviewByStatus(statuslist);
+          LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object>();
+          map.put("status", "Schedule Interview");
+          Gson gson = new Gson();
+          String resultJson = gson.toJson(map, LinkedHashMap.class); 
+          return resultJson; 
+      } catch(Exception e) {
+          return null;
+      } 
+}   
 
 
 

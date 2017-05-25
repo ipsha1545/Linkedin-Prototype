@@ -241,14 +241,14 @@ public class CompanyController {
     @RequestMapping( value = "/company/interview", method = RequestMethod.GET)
     public ResponseEntity searchInterviewByStatus(String statuslist)
     {
-            List<Interview> interviews = companyService.getInterviewByStatus(statuslist);
-            if ( null == interviews ) {
+            String result= companyService.getInterviewByStatus(statuslist);
+            if ( null == result) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
                  "Server error. Please try again").toString()); 
                 
             }
 
-            return new ResponseEntity<>(interviews, new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
     }
 
      
