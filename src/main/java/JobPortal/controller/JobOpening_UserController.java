@@ -129,7 +129,6 @@ public class JobOpening_UserController {
             resume = null;
         }
 
-
         return jobOpening_userService.apply_Job(Integer.valueOf(params.get("userid")), Integer.valueOf(params.get("jobid")), resume);
     }
 
@@ -141,6 +140,15 @@ public class JobOpening_UserController {
 
        // return jobOpening_userService.changeStatus(applicationId, status);
         return jobOpening_userService.changeStatus(applicationId, status);
+    }
+
+
+    @RequestMapping(value ="/userJob/reapply", method = RequestMethod.POST)
+    public ResponseEntity reApply(@RequestParam Map<String,String> params) {
+
+        int applicationId = Integer.valueOf(params.get("applicationId"));
+
+        return jobOpening_userService.reApply(applicationId);
     }
 
 
