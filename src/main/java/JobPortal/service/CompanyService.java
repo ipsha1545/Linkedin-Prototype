@@ -132,11 +132,11 @@ public class CompanyService {
 
    }
 
-  public String scheduleInterview(int userId, int jobId, String title, String email, 
+  public String scheduleInterview(int userId, int jobId, int applicationid, String title, String email, 
                              String location, String startTime, String endTime)
   {
         String status = "InvitationSent";
-        Interview interview = new Interview(userId, jobId, location, startTime, status);
+        Interview interview = new Interview(userId, jobId, applicationid, location, startTime, status);
         try {
             Interview newInterview = interviewDao.save(interview);
             LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object>();
@@ -148,7 +148,8 @@ public class CompanyService {
         } catch (Exception e) {
             return null;
         }
-  } 
+    }
+
 
  public List<Interview> getInterviewByStatus(String statusList)
  {
