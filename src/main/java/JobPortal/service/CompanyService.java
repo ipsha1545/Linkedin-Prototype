@@ -132,18 +132,19 @@ public class CompanyService {
 
    }
 
-  public Interview scheduleInterview(int userId, int jobId, String title, String email, 
-                             String location, String startTime, String endTime)
-  {
+ public Interview scheduleInterview(int userId, int jobId, int applicationid, String title, String email,
+                                       String location, String startTime, String endTime)
+    {
         String status = "InvitationSent";
-        Interview interview = new Interview(userId, jobId, location, startTime, status);
+        Interview interview = new Interview(userId, jobId, applicationid, location, startTime, status);
         try {
             interview = interviewDao.save(interview);
             return interview;
         } catch (Exception e) {
             return null;
         }
-  } 
+    }
+
 
  public String getInterviewByStatus(String statusList)
  {
