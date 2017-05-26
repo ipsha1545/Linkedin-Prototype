@@ -15,7 +15,6 @@ import org.springframework.ui.ModelMap;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -124,7 +123,6 @@ public class JobOpening_UserService {
         }
     }
 
-
         public ResponseEntity apply_Job(int userid, int jobid, String resume) {
 
         try {
@@ -142,11 +140,11 @@ public class JobOpening_UserService {
 
                     int companyId = jobOpeningDao.findByJobId(jobid).getCompanyId();
                     jobOpening_user = new JobOpening_User(userid, jobid, companyId, "Applied", false, false);
-                    
-                    if(resume != null){
+
+                    if (resume != null) {
                         jobOpening_user.setResume(resume);
                     }
-                    
+
                     jobOpening_userDao.save(jobOpening_user);
 
                     return new ResponseEntity(jobOpening_user, HttpStatus.OK);
@@ -154,11 +152,11 @@ public class JobOpening_UserService {
                 } else {
 
                     jobOpening_user.setStatus("Applied");
-                    
-                     if(resume != null){
+
+                    if (resume != null) {
                         jobOpening_user.setResume(resume);
                     }
-                    
+
                     jobOpening_userDao.save(jobOpening_user);
 
                     return new ResponseEntity(jobOpening_user, HttpStatus.OK);
@@ -287,6 +285,7 @@ public class JobOpening_UserService {
             JobOpening_User jobOpening_user = jobOpening_userDao.findByJob_userId(applicationId);
 
             if(status.contains("Company")){
+
 
                 if(status.contains("Cancel")) {
                     if(jobOpening_user.getStatus().equals("Applied") || jobOpening_user.getStatus().equals("Offered") ||
@@ -458,5 +457,36 @@ public class JobOpening_UserService {
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
+
+    public ResponseEntity reApply(int applcId) {
+        try{
+
+            JobOpening_User existingApplication = jobOpening_userDao.findByJob_userId(applcId);
+            User u = userDao.findByuserId(existingApplication.getUserId());
+
+            int pending = u.getPending_applications();
+
+            if (pending < 5) {
+                pending = pending + 1;
+                u.setPending_applications(pending);
+                userDao.save(u);
+
+                existingApplication.setStatus("Applied");
+                existingApplication.setTerminal(false);
+                jobOpening_userDao.save(existingApplication);
+                return new ResponseEntity(existingApplication, HttpStatus.OK);
+
+            }else{
+                ModelMap m = new ModelMap();
+                m.addAttribute("msg", "too many pending applications");
+                return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+            }
+
+
+        }catch(Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 }
