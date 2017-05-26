@@ -197,45 +197,46 @@ public class CompanyController {
 
     }
 
-    @RequestMapping( value = "/company/interview", method = RequestMethod.POST)
+   @RequestMapping( value = "/company/interview", method = RequestMethod.POST)
     public ResponseEntity createInterviewInvite(@RequestParam String userId,
-                                            @RequestParam String jobId,
-                                            @RequestParam String location,
-                                            @RequestParam String start,
-                                            @RequestParam String end)
+                                                @RequestParam String jobId,
+                                                @RequestParam String applicationId,
+                                                @RequestParam String location,
+                                                @RequestParam String start,
+                                                @RequestParam String end)
     {
 
-       int userid = Integer.valueOf(userId); 
-       int jobid = Integer.valueOf(jobId);
-       
-       User user = userService.getUserByID(userid);
-       JobOpening jobOpening = jobOpeningService.getJobOpeningByJobId(jobId);
+        int userid = Integer.valueOf(userId);
+        int jobid = Integer.valueOf(jobId);
+        int applicationid = Integer.valueOf(applicationId);
 
-       if (null == user || null == jobOpening) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
-                   "User does not exist").toString());      
-       }
+        User user = userService.getUserByID(userid);
+        JobOpening jobOpening = jobOpeningService.getJobOpeningByJobId(jobId);
 
-       String userEmail = user.getEmail();  
-       String title = jobOpening.getTitle();
-       
-        
-       companyService.scheduleInterview(userid, jobid, title, 
-                                    userEmail, location, start, end); 
-       Interview interview = companyService.scheduleInterview(userid, jobid, title, 
-                                    userEmail, location, start, end); 
+        if (null == user || null == jobOpening) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HttpError(404,
+                    "User does not exist").toString());
+        }
+
+        String userEmail = user.getEmail();
+        String title = jobOpening.getTitle();
+
+//        companyService.scheduleInterview(userid, jobid, applicationid, title,
+//                userEmail, location, start, end);
+        Interview interview = companyService.scheduleInterview(userid, jobid, applicationid, title,
+                userEmail, location, start, end);
 
 
-       //Interview interview = companyService.scheduleInterview(userid, jobid, "Analyst", 
-       //                             "sandhya.ramanarayanan@sjsu.edu", location, start, end); 
-       
-      if (null == interview) {
+        //Interview interview = companyService.scheduleInterview(userid, jobid, "Analyst",
+        //                             "sandhya.ramanarayanan@sjsu.edu", location, start, end);
+
+        if (null == interview) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
-                 "Server error. Please try again").toString()); 
-       }
-       return new ResponseEntity<>( interview, new HttpHeaders(), HttpStatus.OK);
- 
-       
+                    "Server error. Please try again").toString());
+        }
+        return new ResponseEntity<>( interview, new HttpHeaders(), HttpStatus.OK);
+
+
     }
 
     @RequestMapping( value = "/company/interview", method = RequestMethod.GET)
