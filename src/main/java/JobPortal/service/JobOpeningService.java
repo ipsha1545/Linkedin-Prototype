@@ -1,11 +1,11 @@
 package JobPortal.service;
 
 import JobPortal.Dao.CompanyDao;
-import JobPortal.Dao.JobOpening_UserDao;
-import JobPortal.model.JobOpening_User;
 import JobPortal.Dao.JobOpeningDao;
+import JobPortal.Dao.JobOpening_UserDao;
 import JobPortal.model.Company;
 import JobPortal.model.JobOpening;
+import JobPortal.model.JobOpening_User;
 import com.google.gson.Gson;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,6 @@ import org.springframework.ui.ModelMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.TermMatchingContext;
-
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -151,20 +146,56 @@ public class JobOpeningService {
             if (!jobIds.isEmpty()) {
                 jobOpenings = jobOpeningDao.findJobOpeningsInCompanyByFilter(jobIds);
             }
+
+            List<Object> l = new ArrayList<>();
+
+            for(int i = 0 ; i < jobOpenings.size(); i++){
+                ModelMap m = new ModelMap();
+                m.addAttribute("jobId", jobOpenings.get(i).getJobId());
+                m.addAttribute("companyId", jobOpenings.get(i).getCompanyId());
+                m.addAttribute("title", jobOpenings.get(i).getTitle());
+                m.addAttribute("description", jobOpenings.get(i).getDescription());
+                m.addAttribute("responsibilities", jobOpenings.get(i).getResponsibilities());
+                m.addAttribute("location", jobOpenings.get(i).getLocation());
+                m.addAttribute("salary", jobOpenings.get(i).getSalary());
+                m.addAttribute("companyname", jobOpenings.get(i).getCompanyname());
+                m.addAttribute("status", jobOpenings.get(i).getCompanyname());
+                m.addAttribute("URL", (companyDao.findByCompanyId(jobOpenings.get(i).getCompanyId())).getLogo_image_url());
+                l.add(m);
+            }
             
             LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
-            map.put("jobopenings", jobOpenings);
+            map.put("jobopenings", l);
+
             Gson gson = new Gson();
             String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
             return jobOpeningsJson; 
     }
     
     
-     public List<JobOpening> getAllOpenJobs() {
+     public Object getAllOpenJobs() {
         List<JobOpening> jobOpeningList = new ArrayList<>();
         jobOpeningList = jobOpeningDao.getAllJobs();
+         List<Object> l = new ArrayList<>();
 
-        return jobOpeningList;
+         for(int i = 0 ; i < jobOpeningList.size(); i++){
+             ModelMap m = new ModelMap();
+             m.addAttribute("jobId", jobOpeningList.get(i).getJobId());
+             m.addAttribute("companyId", jobOpeningList.get(i).getCompanyId());
+             m.addAttribute("title", jobOpeningList.get(i).getTitle());
+             m.addAttribute("description", jobOpeningList.get(i).getDescription());
+             m.addAttribute("responsibilities", jobOpeningList.get(i).getResponsibilities());
+             m.addAttribute("location", jobOpeningList.get(i).getLocation());
+             m.addAttribute("salary", jobOpeningList.get(i).getSalary());
+             m.addAttribute("companyname", jobOpeningList.get(i).getCompanyname());
+             m.addAttribute("status", jobOpeningList.get(i).getCompanyname());
+             m.addAttribute("URL", (companyDao.findByCompanyId(jobOpeningList.get(i).getCompanyId())).getLogo_image_url());
+
+             l.add(m);
+
+         }
+
+         return l;
     }
 
     public ModelMap getAllFilters() {
@@ -182,77 +213,77 @@ public class JobOpeningService {
     }
 
 
-    public String searchJobOpenings(String text) {
-    
-        boolean emptyListReturned = false;
-        // get the full text entity manager
-        FullTextEntityManager fullTextEntityManager =
-          org.hibernate.search.jpa.Search.
-          getFullTextEntityManager(entityManager);
-        
-        // create the query using Hibernate Search query DSL
-        QueryBuilder queryBuilder = 
-          fullTextEntityManager.getSearchFactory()
-          .buildQueryBuilder().forEntity(JobOpening.class).get();
-        
-        List<String> queryList = Arrays.asList(text.split("\\s*,\\s*"));
-        Map<String, List<JobOpening>> jobMap = new HashMap<String, List<JobOpening>>();
-        for (String queryText : queryList) 
-        {
-             //a very basic query by keywords
-            org.apache.lucene.search.Query query =
-              queryBuilder
-                .keyword()
-                .onFields("title", "location", "responsibilities", "description" , "companyname")
-                .matching(queryText)
-                .createQuery();
-
-             // wrap Lucene query in an Hibernate Query object
-            org.hibernate.search.jpa.FullTextQuery jpaQuery =
-              fullTextEntityManager.createFullTextQuery(query, JobOpening.class);
-      
-            // execute search and return results (sorted by relevance as default)
-            @SuppressWarnings("unchecked")
-            List<JobOpening> results = jpaQuery.getResultList();
-        
-            if (results.size() == 0)
-            {
-                emptyListReturned = true;
-                break;
-            }
-            jobMap.put(queryText,results);
-        }
-      
-        Collection<JobOpening> intersection = new ArrayList<JobOpening>();
- 
-        for (String key : jobMap.keySet())
-        {
-            if (emptyListReturned)
-                break;
-            Collection<JobOpening> jobCollection = jobMap.get(key);
-            if (!intersection.isEmpty()) {
-                intersection = (Collection<JobOpening>)CollectionUtils.
-                                        intersection(intersection, jobCollection);
-                if (intersection.isEmpty()) {
-                    emptyListReturned = true;
-                    break;
-                }
-            } else {
-                intersection = jobCollection;
-            }
-
-        }
-        List<JobOpening> results  = new ArrayList<>();
-        results.addAll(intersection);
-        LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
-        if (!emptyListReturned) 
-            map.put("jobopenings", results);
-        Gson gson = new Gson();
-        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
-
-        System.out.println(jobOpeningsJson);
-        return jobOpeningsJson;
-   } 
+//    public String searchJobOpenings(String text) {
+//
+//        boolean emptyListReturned = false;
+//        // get the full text entity manager
+//        FullTextEntityManager fullTextEntityManager =
+//          org.hibernate.search.jpa.Search.
+//          getFullTextEntityManager(entityManager);
+//
+//        // create the query using Hibernate Search query DSL
+//        QueryBuilder queryBuilder =
+//          fullTextEntityManager.getSearchFactory()
+//          .buildQueryBuilder().forEntity(JobOpening.class).get();
+//
+//        List<String> queryList = Arrays.asList(text.split("\\s*,\\s*"));
+//        Map<String, List<JobOpening>> jobMap = new HashMap<String, List<JobOpening>>();
+//        for (String queryText : queryList)
+//        {
+//             //a very basic query by keywords
+//            org.apache.lucene.search.Query query =
+//              queryBuilder
+//                .keyword()
+//                .onFields("title", "location", "responsibilities", "description" , "companyname")
+//                .matching(queryText)
+//                .createQuery();
+//
+//             // wrap Lucene query in an Hibernate Query object
+//            org.hibernate.search.jpa.FullTextQuery jpaQuery =
+//              fullTextEntityManager.createFullTextQuery(query, JobOpening.class);
+//
+//            // execute search and return results (sorted by relevance as default)
+//            @SuppressWarnings("unchecked")
+//            List<JobOpening> results = jpaQuery.getResultList();
+//
+//            if (results.size() == 0)
+//            {
+//                emptyListReturned = true;
+//                break;
+//            }
+//            jobMap.put(queryText,results);
+//        }
+//
+//        Collection<JobOpening> intersection = new ArrayList<JobOpening>();
+//
+//        for (String key : jobMap.keySet())
+//        {
+//            if (emptyListReturned)
+//                break;
+//            Collection<JobOpening> jobCollection = jobMap.get(key);
+//            if (!intersection.isEmpty()) {
+//                intersection = (Collection<JobOpening>)CollectionUtils.
+//                                        intersection(intersection, jobCollection);
+//                if (intersection.isEmpty()) {
+//                    emptyListReturned = true;
+//                    break;
+//                }
+//            } else {
+//                intersection = jobCollection;
+//            }
+//
+//        }
+//        List<JobOpening> results  = new ArrayList<>();
+//        results.addAll(intersection);
+//        LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+//        if (!emptyListReturned)
+//            map.put("jobopenings", results);
+//        Gson gson = new Gson();
+//        String jobOpeningsJson = gson.toJson(map, LinkedHashMap.class);
+//
+//        System.out.println(jobOpeningsJson);
+//        return jobOpeningsJson;
+//   }
 
     
      public ResponseEntity updateJob(int jobid, String emails, int companyId, String companyname, String title, String description,
