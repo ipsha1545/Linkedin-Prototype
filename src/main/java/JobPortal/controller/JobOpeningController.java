@@ -1,32 +1,29 @@
 package JobPortal.controller;
 
 
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.stereotype.Controller;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import java.io.IOException;
-
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import JobPortal.model.Company;
-import JobPortal.service.CompanyService;
-import JobPortal.service.JobOpening_UserService;
-import JobPortal.model.JobOpening;
-import JobPortal.service.JobOpeningService;
 import JobPortal.exception.HttpError;
-
+import JobPortal.model.Company;
+import JobPortal.model.JobOpening;
+import JobPortal.service.CompanyService;
+import JobPortal.service.JobOpeningService;
+import JobPortal.service.JobOpening_UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -130,18 +127,18 @@ public class JobOpeningController {
         
     }
         
-
-    @RequestMapping(value ="/jobopenings/search", method = RequestMethod.GET)
-    public ResponseEntity searchJobOpenings(HttpServletResponse response, 
-                                            @RequestParam String q)
-    {
-
-        log.error(q);
-        
-        return new ResponseEntity<>(jobOpeningService.searchJobOpenings(q),
-                                    new HttpHeaders(), HttpStatus.OK);
-
-    }
+//
+//    @RequestMapping(value ="/jobopenings/search", method = RequestMethod.GET)
+//    public ResponseEntity searchJobOpenings(HttpServletResponse response,
+//                                            @RequestParam String q)
+//    {
+//
+//        log.error(q);
+//
+//        return new ResponseEntity<>(jobOpeningService.searchJobOpenings(q),
+//                                    new HttpHeaders(), HttpStatus.OK);
+//
+//    }
 
 
     @RequestMapping(value ="/jobopenings", method = RequestMethod.GET)
