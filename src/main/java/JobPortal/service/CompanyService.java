@@ -132,30 +132,31 @@ public class CompanyService {
 
    }
 
-  public Interview scheduleInterview(int userId, int jobId, String title, String email, 
+  public String scheduleInterview(int userId, int jobId, String title, String email, 
                              String location, String startTime, String endTime)
   {
         String status = "InvitationSent";
         Interview interview = new Interview(userId, jobId, location, startTime, status);
         try {
-            interview = interviewDao.save(interview);
-            return interview;
+            Interview newInterview = interviewDao.save(interview);
+            LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object>();
+            map.put("status", "Schedule Interview");
+            Gson gson = new Gson();
+            String resultJson = gson.toJson(map, LinkedHashMap.class); 
+            System.out.println("scheduling");
+            return resultJson; 
         } catch (Exception e) {
             return null;
         }
   } 
 
- public String getInterviewByStatus(String statusList)
+ public List<Interview> getInterviewByStatus(String statusList)
  {
       List<String> statuslist= Arrays.asList(statusList.split("\\s*,\\s*"));
       List<Interview> result = new ArrayList<>(); 
       try {    
           result = interviewDao.getInterviewByStatus(statuslist);
-          LinkedHashMap<Object, Object> map = new LinkedHashMap<Object, Object>();
-          map.put("status", "Schedule Interview");
-          Gson gson = new Gson();
-          String resultJson = gson.toJson(map, LinkedHashMap.class); 
-          return resultJson; 
+          return result; 
       } catch(Exception e) {
           return null;
       } 

@@ -99,6 +99,7 @@ public class ProfilingAspect {
         String endDate = (String) joinPoint.getArgs()[6];
         String email = (String) joinPoint.getArgs()[3];
         String title = (String) joinPoint.getArgs()[2];
+        System.out.println("im here");
         this.sendCalendarInvite(title, email, startDate, endDate);
    }
 

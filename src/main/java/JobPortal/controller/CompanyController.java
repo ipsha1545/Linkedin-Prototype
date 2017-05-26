@@ -222,18 +222,18 @@ public class CompanyController {
         
        companyService.scheduleInterview(userid, jobid, title, 
                                     userEmail, location, start, end); 
-       Interview interview = companyService.scheduleInterview(userid, jobid, title, 
+       String interviewResult = companyService.scheduleInterview(userid, jobid, title, 
                                     userEmail, location, start, end); 
 
 
        //Interview interview = companyService.scheduleInterview(userid, jobid, "Analyst", 
        //                             "sandhya.ramanarayanan@sjsu.edu", location, start, end); 
        
-      if (null == interview) {
+      if (null == interviewResult) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
                  "Server error. Please try again").toString()); 
        }
-       return new ResponseEntity<>( interview, new HttpHeaders(), HttpStatus.OK);
+       return new ResponseEntity<>(interviewResult, new HttpHeaders(), HttpStatus.OK);
  
        
     }
@@ -241,7 +241,7 @@ public class CompanyController {
     @RequestMapping( value = "/company/interview", method = RequestMethod.GET)
     public ResponseEntity searchInterviewByStatus(String statuslist)
     {
-            String result= companyService.getInterviewByStatus(statuslist);
+            List<Interview> result= companyService.getInterviewByStatus(statuslist);
             if ( null == result) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HttpError(500,
                  "Server error. Please try again").toString()); 
